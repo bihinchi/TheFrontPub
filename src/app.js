@@ -18,7 +18,7 @@ export const Dapp = {
     return Dapp.initWeb3();
   },
 
-  initWeb3: function() {
+  initWeb3: async function() {
 
     // TODO: refactor conditional
     if (typeof web3 == 'undefined') {
@@ -34,18 +34,17 @@ export const Dapp = {
 
     }
 
-    console.log(web3.version);
+    //console.log(web3);
+    const accounts = await web3.eth.getAccounts();
+    Dapp.account = accounts[0];
 
     return Dapp.initContract();
   },
 
 
   callContract: (method, params) => {
-    return Dapp.contracts.Advertisement.deployed()
-          .then(function(instance) {
-            const cal = "instance." + method + (params ? "('" + params + "')" : "()")
-            return eval(cal)
-          });
+    const cal = "Dapp.Advertisement.methods" + method + ".call" + (params ? "('" + params + "')" : "()")
+    return eval(cal);
   },
 
 
@@ -65,13 +64,9 @@ export const Dapp = {
 
   initContract: function() {
 
-    Dapp.Advertisement = new web3.eth.Contract(AbiFile.abi, "0x2dB52487cb161D34A1aEfb0167C88A45865CeA52");
+    Dapp.Advertisement = new web3.eth.Contract(AbiFile.abi, "0x75985102e246302E887A2D4cA0e7D562190B0F1D");
     Dapp.Advertisement.setProvider(Dapp.web3Provider);
-    
-    console.log(Dapp.Advertisement);
-    
     Dapp.listenForEvents()
-
   },
 
 
@@ -169,7 +164,7 @@ export const Dapp = {
           topScoreAd.score = newScore;
         }
   
-        Dapp.minShowTime += timeDiff;
+        Dapp.minShowTime += timeDiff
         Dapp.topAd = topScoreAd;
       }
 
@@ -181,7 +176,6 @@ export const Dapp = {
 
   // Listen for events emitted from the contract
   listenForEvents: function() {
-    console.log(Dapp.Advertisement.getPastEvents);
 
     Dapp.Advertisement.getPastEvents('newPublished', {
       fromBlock: 0,
@@ -191,12 +185,12 @@ export const Dapp = {
       
       for (const event of events) {
 
-        if (!(event.args._advLink in Dapp.publications)) Dapp.publications[event.args._advLink] = {
-            link : event.args._advLink,
-            desc : event.args._description,
-            initialScore : parseFloat(web3.fromWei(event.args._score)),
-            time : event.args._time.toNumber(),
-            score : parseFloat(web3.fromWei(event.args._score)),
+        if (!(event.returnValues._advLink in Dapp.publications)) Dapp.publications[event.returnValues._advLink] = {
+            link : event.returnValues._advLink,
+            desc : event.returnValues._description,
+            initialScore : parseFloat(web3.utils.fromWei(event.returnValues._score)),
+            time : web3.utils.toNumber(event.returnValues._time),
+            score : parseFloat(web3.utils.fromWei(event.returnValues._score)),
             lastShownTime : 0,
             publishedFor: 0,
           }
@@ -238,22 +232,21 @@ export const Dapp = {
     });
 
     // Load contract data
-    
-    Dapp.contracts.Advertisement.deployed()
-    .then(function(instance) {
-      electionInstance = instance;
 
-      electionInstance.publication_to_show()
-      .then((publication) => {
-        $("#advLink").attr("href", publication[0])
-        $("#advLink").text(publication[1])
-      })
-      .catch((err) => console.error(err))
+    console.log(Dapp.Advertisement);
 
-      electionInstance.topPublication()
-      .then((topAds) => {
-      }).catch((err) => console.error(err))
+    const res = Dapp.Advertisement.methods.publication_to_show()
 
+    console.log(res);
+
+    res.call().then((publication) => {
+      $("#advLink").attr("href", publication[0])
+      $("#advLink").text(publication[1])
+    })
+    .catch((err) => console.error("Wababuba:", err))
+
+    Dapp.Advertisement.methods.topPublication().call()
+    .then((topAds) => {
     }).catch((err) => console.error(err))
 
   },
@@ -261,18 +254,17 @@ export const Dapp = {
 
 
   publishNewAds : function() {
-    Dapp.contracts.Advertisement.deployed().then(function(instance) {
+
       var link = $("#adlink").val();
       var desc = $("#addescription").val();
       var price = $("#advalue").val() || 0.012;
-      return instance.publish(link, desc, 
+      return Dapp.Advertisement.methods.publish(link, desc, 
         { from: Dapp.account, 
           value:  web3.toWei(price, "ether"),
           gas: 3000000
         })
       .then((result) => console.log("recept:", result))
       .catch((error) => console.error(error));
-    })
   }
 
 };
