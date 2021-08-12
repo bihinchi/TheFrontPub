@@ -25,9 +25,10 @@
 		}
 	]
 
-	Dapp.current = pubs[0];
+	Dapp.current = pubs[1];
 
 	document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
+	document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
 	
 
 </script>
@@ -38,7 +39,7 @@
 		<NewPub/>
 	</section>
 
-	<div>Another content here</div>
+	<section>Another content here</section>
 
 </main>
 
@@ -47,16 +48,11 @@
 	
 	main {
 		width: 95%;
-		margin: 0 auto;
+		margin: 0.5em auto;
 	}
 
 	section {
 		height: calc(var(--vh, 1vh) * 100);
-
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
 	}
 
 </style>
