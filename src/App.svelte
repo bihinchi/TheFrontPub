@@ -4,6 +4,7 @@
 	import NewPub from "./NewPub.svelte";
 
 	import { Dapp } from "./app"
+	//import { onMount } from "svelte"
 
 	Dapp.init()
 
@@ -12,7 +13,7 @@
 			link: "http://example.com",
 			type: "link",
 		}, {
-			link: "https://searx.bar/morty/?mortyurl=https%3A%2F%2Flive.staticflickr.com%2F3868%2F18656441554_57b28dd486_b.jpg&mortyhash=5fa694c9eb29b40b646762e87c0d071609c6a993ae94ea5e8833c187f0cb5f6c",
+			link: "https://www.highreshdwallpapers.com/wp-content/uploads/2014/03/Wonderful-HD-Space-Scene.jpg",
 			type: "image",
 		}, {
 			link: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
@@ -26,23 +27,36 @@
 
 	Dapp.current = pubs[0];
 
+	document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
+	
+
 </script>
 
 <main>
-	<Publication pub={ Dapp.current }/>
-	<NewPub/>
+	<section>
+		<Publication pub={ Dapp.current }/>
+		<NewPub/>
+	</section>
+
+	<div>Another content here</div>
+
 </main>
 
 
 <style>
 	
 	main {
-		
-		/* display: flex;
-		flex-direction: column;
-		align-items: center; */
+		width: 95%;
+		margin: 0 auto;
+	}
 
-		padding: 0.6em;
+	section {
+		height: calc(var(--vh, 1vh) * 100);
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 
 </style>
