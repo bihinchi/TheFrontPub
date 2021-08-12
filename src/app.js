@@ -2,7 +2,6 @@ import * as AbiFile from './Advertisement.json'
 
 import Web3 from "./web3";
 
-
 const MIN5 = 300
 
 export const Dapp = {
@@ -20,23 +19,20 @@ export const Dapp = {
 
   initWeb3: async function() {
 
-    // TODO: refactor conditional
-    if (typeof web3 == 'undefined') {
-      // If a web3 instance is already provided by Meta Mask.
+    // Temproral condition
+    // TODO: inverse the equality in production
+    
+    if (typeof web3 == 'undefined') 
       Dapp.web3Provider = web3.currentProvider;
-      web3 = new Web3(web3.currentProvider);
-      ethereum.enable()
-
-    } else {
-      // Specify default instance if no web3 instance provided
+    else 
       Dapp.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-      web3 = new Web3(Dapp.web3Provider);
+    
+    web3 = new Web3(Dapp.web3Provider);
 
-    }
-
-    //console.log(web3);
     const accounts = await web3.eth.getAccounts();
     Dapp.account = accounts[0];
+
+    console.log("Acc:", Dapp.account);
 
     return Dapp.initContract();
   },
@@ -63,7 +59,6 @@ export const Dapp = {
 
 
   initContract: function() {
-
     Dapp.Advertisement = new web3.eth.Contract(AbiFile.abi, "0x75985102e246302E887A2D4cA0e7D562190B0F1D");
     Dapp.Advertisement.setProvider(Dapp.web3Provider);
     Dapp.listenForEvents()
@@ -127,7 +122,6 @@ export const Dapp = {
         let secondTopScoreAd = ads[keys[0]] === topScoreAd ? ads[keys[1]] : ads[keys[0]];  
 
 
-
         let minTimeDiff = Infinity;
 
         for (const [key, ad] of Object.entries(ads)) {
@@ -182,7 +176,7 @@ export const Dapp = {
       toBlock: 'latest'
     })
     .then(events => {
-      
+
       for (const event of events) {
 
         if (!(event.returnValues._advLink in Dapp.publications)) Dapp.publications[event.returnValues._advLink] = {
@@ -209,45 +203,30 @@ export const Dapp = {
     var loader = $("#loader");
     var content = $("#content");
 
+    let elem = Object.values(Dapp.publications)[0];
 
-    $("#topAds").empty();
+    console.log("elem:", elem);
 
-    console.log(Dapp.publications);
-    Object.values(Dapp.publications).forEach(elem => {
-      $("#topAds").append(
-        "<li>" + elem.desc  + "</li>",
-        "<li>" + elem.link  + "</li>",
-        "<li>" + elem.score  + "</li>",
-        "<br>"
-      )
-    })
+    if (elem == undefined) elem = {
+      link : "#",
+      desc : "No ads"
+    };
+
+    $("#advLink").attr("href", elem.link)
+    $("#advLink").text(elem.desc)
 
     // Load account data
     web3.eth.getCoinbase(function(err, account) {
       if (err === null) {
-
         Dapp.account = account;
         $("#accountAddress").html("Your Account: " + account);
       } 
     });
 
-    // Load contract data
 
-    console.log(Dapp.Advertisement);
-
-    const res = Dapp.Advertisement.methods.publication_to_show()
-
-    console.log(res);
-
-    res.call().then((publication) => {
-      $("#advLink").attr("href", publication[0])
-      $("#advLink").text(publication[1])
-    })
-    .catch((err) => console.error("Wababuba:", err))
-
-    Dapp.Advertisement.methods.topPublication().call()
+    /* Dapp.Advertisement.methods.topPublication().call()
     .then((topAds) => {
-    }).catch((err) => console.error(err))
+    }).catch((err) => console.error(err)) */
 
   },
 
@@ -257,10 +236,10 @@ export const Dapp = {
 
       var link = $("#adlink").val();
       var desc = $("#addescription").val();
-      var price = $("#advalue").val() || 0.012;
-      return Dapp.Advertisement.methods.publish(link, desc, 
+      var price = $("#advalue").val() || 0.01;
+      return Dapp.Advertisement.methods.publish(link, desc).send( 
         { from: Dapp.account, 
-          value:  web3.toWei(price, "ether"),
+          value:  web3.utils.toWei(price, "ether"),
           gas: 3000000
         })
       .then((result) => console.log("recept:", result))
@@ -494,6 +473,7 @@ function scoreReduction(s) {
 
 function reverseScore(price) {
   const a = 0.00014038530109067304;
+
   const b = 0.03779471529884403935;
   const c = 0.01206489939977473114 - price;
   return 3600 * (-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a);

@@ -1,40 +1,48 @@
 
 <script>
-	export let name;
+	import Publication from "./Publication.svelte";
+	import NewPub from "./NewPub.svelte";
 
-	import { onMount } from 'svelte';
 	import { Dapp } from "./app"
 
-	onMount(() => { Dapp.init() })
+	Dapp.init()
 
-	
+
+	const pubs = [ {	
+			link: "http://example.com",
+			type: "link",
+		}, {
+			link: "https://searx.bar/morty/?mortyurl=https%3A%2F%2Flive.staticflickr.com%2F3868%2F18656441554_57b28dd486_b.jpg&mortyhash=5fa694c9eb29b40b646762e87c0d071609c6a993ae94ea5e8833c187f0cb5f6c",
+			type: "image",
+		}, {
+			link: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
+			type: "video",
+
+		}, {
+			link: "http://example.com/",
+			type: "iframe",
+		}
+	]
+
+	Dapp.current = pubs[0];
+
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-
-
+	<Publication pub={ Dapp.current }/>
+	<NewPub/>
 </main>
 
+
 <style>
+	
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
+		
+		/* display: flex;
+		flex-direction: column;
+		align-items: center; */
+
+		padding: 0.6em;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
 </style>
