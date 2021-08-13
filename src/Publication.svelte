@@ -42,11 +42,6 @@
   { /if }
 
 
-  <!-- <div id="content">
-    <a id="advLink" target="_blank" rel="noopener noreferrer" href="">Advertisement link</a>
-    <span id="advDescription"></span>
-  </div> -->
-
 
 </article>
 
@@ -86,26 +81,6 @@
     height: auto;
     border: 0.4px solid #7e7d7d;
   }
-
-
-
-
-  /* #iframe-wrapper {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    padding-top: 56.25%;
-  }
-
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-  } */
 
 
 </style>

@@ -1,5 +1,8 @@
-<button>New</button>
+<script>
+    import { getModal } from './Modal.svelte';
+</script>
 
+<button on:click={()=>getModal().open()}>New</button>
 
 <style>
     button {

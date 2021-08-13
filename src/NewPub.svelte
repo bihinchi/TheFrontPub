@@ -1,14 +1,16 @@
 <script>
     import NewPubButton from "./NewPubButton.svelte";
-	import NewPubModal from "./NewPubModal.svelte";
+    import NewPubModalContent from "./NewPubModalContent.svelte"
+    import Modal from './Modal.svelte'
 </script>
 
 <article>
     <NewPubButton />
 </article>
 
-<NewPubModal />
-
+<Modal>
+	<NewPubModalContent/>
+</Modal>
 
 <style>
     article {
