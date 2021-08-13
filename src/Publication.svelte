@@ -29,8 +29,14 @@
   
   { :else if pub.type == "iframe"}
 
+    <iframe title="Current publication" src={pub.link}
+      referrerpolicy="no-referrer"
+      allowpaymentrequest
+      allowfullscreen
+    >
+    </iframe>
+
     <div id="iframe-wrapper">
-      <iframe title="Current publication" src={pub.link}></iframe>
     </div>
 
   { /if }
@@ -48,12 +54,13 @@
 <style>
 
   article {
-    height: 80%;
+    height: 83%;
     width: auto;
     margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0.1em;
   }
 
   img {
@@ -67,21 +74,29 @@
 
   video {
     object-fit: cover;
-    max-height: 80%;
-    min-width: 60%;
+    max-height: 100%;
+    width: auto;
     height: auto;
   }
 
+  iframe {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    border: 0.4px solid #7e7d7d;
+  }
 
 
-  #iframe-wrapper {
+
+
+  /* #iframe-wrapper {
     position: relative;
     overflow: hidden;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+    padding-top: 56.25%;
   }
 
-/* Then style the iframe to fit in the container div with full height and width */
   iframe {
     position: absolute;
     top: 0;
@@ -90,7 +105,7 @@
     right: 0;
     width: 100%;
     height: 100%;
-  }
+  } */
 
 
 </style>

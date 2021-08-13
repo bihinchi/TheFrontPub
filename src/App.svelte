@@ -20,12 +20,12 @@
 			type: "video",
 
 		}, {
-			link: "http://example.com/",
+			link: "https://wikipedia.org",
 			type: "iframe",
 		}
 	]
 
-	Dapp.current = pubs[1];
+	Dapp.current = pubs[3];
 
 	document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
 	document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);

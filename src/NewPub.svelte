@@ -12,7 +12,7 @@
 
 <style>
     article {
-        height: 20%;
+        height: 17%;
         display:flex;
         justify-content:center;
         align-items: center;
