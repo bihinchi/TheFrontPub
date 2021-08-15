@@ -14,9 +14,13 @@
 
 <style>
     article {
-        height: 17%;
+        height: 13%;
         display:flex;
         justify-content:center;
         align-items: center;
+        margin: 2.5vh auto;
+        width: auto;
     }
+
+    
 </style>

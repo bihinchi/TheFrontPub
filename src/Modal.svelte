@@ -1,7 +1,8 @@
 <script context="module" lang="ts">
-	let onTop   //keeping track of which open modal is on top
-	const modals={}  //all modals get registered here for easy future access
 	
+	const modals={}  //all modals get registered here for easy future access
+	let onTop   //keeping track of which open modal is on top
+
 	// 	returns an object for the modal specified by `id`, which contains the API functions (`open` and `close` )
 	export function getModal(id=''){
 		return modals[id]

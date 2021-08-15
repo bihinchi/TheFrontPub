@@ -36,9 +36,6 @@
     >
     </iframe>
 
-    <div id="iframe-wrapper">
-    </div>
-
   { /if }
 
 
@@ -49,27 +46,38 @@
 <style>
 
   article {
-    height: 83%;
+    height: 75%;
     width: auto;
-    margin: 0 auto;
+    margin: 1.3vh auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.1em;
+  }
+
+  a {
+    overflow: auto;
+    word-break:break-all;
+    font-size: 3.5vw;
+    max-width: 90%;
+    max-height: 90%;
+    margin: 2vw auto;
+    min-width: 70vw;
+    text-align: center;
   }
 
   img {
+    border-radius: 1%;
+    box-shadow: 0.1vw 0.1vh 1.5vw black;
     max-width: 100%;
     max-height: 100%;
-    width: auto;
-    height: auto; 
-    display: block;
-    margin: auto;
+    min-width: 75vw;
+    height: auto;
   }
 
   video {
     object-fit: cover;
     max-height: 100%;
+    min-width: 65vw;
     width: auto;
     height: auto;
   }
@@ -77,6 +85,7 @@
   iframe {
     min-width: 100%;
     min-height: 100%;
+    min-width: 90vw;
     width: auto;
     height: auto;
     border: 0.4px solid #7e7d7d;

@@ -25,11 +25,16 @@
 		}
 	]
 
-	Dapp.current = pubs[1];
-
-	document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
-	document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
+	Dapp.current = pubs[0];
 	
+	const calculateWindow = () => {
+		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
+		document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
+	}
+
+	calculateWindow();
+	window.visualViewport.addEventListener("resize", calculateWindow);
+
 
 </script>
 
@@ -39,20 +44,21 @@
 		<NewPub/>
 	</section>
 
-	<section>Another content here</section>
-
 </main>
 
 
 <style>
 	
 	main {
-		width: 95%;
-		margin: 0.5em auto;
+		margin: 0vw auto;
 	}
 
 	section {
 		height: calc(var(--vh, 1vh) * 100);
+        display:flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 	}
 
 </style>

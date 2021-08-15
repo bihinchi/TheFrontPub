@@ -5,6 +5,8 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 
+import { svelteSVG } from "rollup-plugin-svelte-svg";
+
 //import builtins from 'rollup-plugin-node-builtins';
 //import globals from "rollup-plugin-node-globals";
 
@@ -44,6 +46,9 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		svelteSVG({
+            svgo: {}
+        }),
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
