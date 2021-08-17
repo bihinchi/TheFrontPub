@@ -61,11 +61,6 @@ onDestroy(()=>{
 
 <div id="topModal" class:visible bind:this={topDiv} on:click={()=>close()}>
 	<div id='modal' on:click|stopPropagation={()=>{}}>
-		<svg id="close" on:click={()=>close()} viewBox="0 0 12 12">
-			<circle cx=6 cy=6 r=6 />
-			<line x1=3 y1=3 x2=9 y2=9 />
-			<line x1=9 y1=3 x2=3 y2=9 />
-		</svg>
 		<div id='modal-content'>
 			<slot></slot>
 		</div>
@@ -87,40 +82,25 @@ onDestroy(()=>{
 		justify-content: center;
 	}
 	#modal {
+		/* height: calc(var(--vh, 1vh) * 95); */
+		/* min-width: 80vw; */
+		max-height: 90vh;
+		max-width: 95vw;
+		margin: auto;
 		position: relative;
 		border-radius: 6px;
 		background: white;
-    border: 2px solid #000;
-		filter: drop-shadow(5px 5px 5px #555);
-		padding: 1em;
+		padding: 4.2vh 2.2vw;
+		border: 0.01vw solid black;
+        box-shadow: 0vw 0vh 0.8vw black;
 	}
 
 	.visible {
 		visibility: visible !important;
 	}
 
-	#close {
-		position: absolute;
-		top:-12px;
-		right:-12px;
-		width:24px;
-		height:24px;
-		cursor: pointer;
-		fill:#F44;
-		transition: transform 0.3s;
-	}	
 
-	#close:hover {
-		transform: scale(2);
-	}
-
-	#close line {
-		stroke:#FFF;
-		stroke-width:2;
-	}
 	#modal-content {
 		max-width: calc(100vw - 20px);
-		max-height: calc(100vh - 20px);
-		overflow: auto;
 	}
 </style>
