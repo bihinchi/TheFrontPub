@@ -48,7 +48,6 @@
   article {
     height: 75%;
     width: auto;
-    margin: 1.3vh auto;
     display: flex;
     justify-content: center;
     align-items: center;

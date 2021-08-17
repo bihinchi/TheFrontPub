@@ -25,7 +25,7 @@
 		}
 	]
 
-	Dapp.current = pubs[0];
+	Dapp.current = pubs[1];
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
@@ -57,7 +57,7 @@
 		height: calc(var(--vh, 1vh) * 100);
         display:flex;
 		flex-direction: column;
-		justify-content: center;
+		justify-content: space-evenly;
 		align-items: center;
 	}
 

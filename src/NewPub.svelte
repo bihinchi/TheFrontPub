@@ -1,11 +1,14 @@
 <script>
-    import NewPubButton from "./NewPubButton.svelte";
+    import EtherButton from "./EtherButton.svelte";
     import NewPubModalContent from "./NewPubModalContent.svelte"
     import Modal from './Modal.svelte'
+
+    import { getModal } from './Modal.svelte';
+
 </script>
 
 <article>
-    <NewPubButton />
+    <EtherButton text="NEW PUBLICATION" onClick={()=>getModal().open()}/>
 </article>
 
 <Modal>
@@ -18,7 +21,6 @@
         display:flex;
         justify-content:center;
         align-items: center;
-        margin: 2.5vh auto;
         width: auto;
     }
 
