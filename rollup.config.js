@@ -7,9 +7,6 @@ import css from 'rollup-plugin-css-only';
 
 import { svelteSVG } from "rollup-plugin-svelte-svg";
 
-//import builtins from 'rollup-plugin-node-builtins';
-//import globals from "rollup-plugin-node-globals";
-
 import json from '@rollup/plugin-json';
 
 
@@ -38,7 +35,7 @@ function serve() {
 }
 
 export default {
-	input: 'src/main.js',
+	input: 'src/js/main.js',
 	output: {
 		sourcemap: true,
 		format: 'iife',
@@ -70,8 +67,6 @@ export default {
 			dedupe: ['svelte']
 		}),
 		commonjs(),
-		//globals(),
-		//builtins(),
 		json(),
 
 		// In dev mode, call `npm run start` once
