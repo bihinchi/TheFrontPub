@@ -1,5 +1,5 @@
-import { init } from 'svelte/internal';
 import * as AbiFile from '../contracts/build/Publication.json'
+import { currentPub } from './stores.js';
 
 import Web3 from "./web3";
 
@@ -7,7 +7,7 @@ const MIN5 = 300
 
 
 
-export class DappLogic {
+export class Dapp {
 
   constructor() {
     this.web3Provider = null;
@@ -17,7 +17,7 @@ export class DappLogic {
     this.minShowTime = 0;
     this.firstTime = true;
 
-    //return this.init();
+    this.init();
   }
 
   init() {
@@ -157,12 +157,11 @@ export class DappLogic {
   
         this.minShowTime += timeDiff
         this.topPub = topScorePub;
+        currentPub.set(this.topPub);
       }
 
     }
     
-    console.log("loop break:", pubs);
-
   }
 
   get current() {
@@ -201,7 +200,7 @@ export class DappLogic {
 
 
 
-export const Dapp = {
+export const Dappp = {
   web3Provider: null,
   contracts: {},
   account: '0x0',

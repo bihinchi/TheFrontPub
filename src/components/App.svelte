@@ -2,38 +2,24 @@
 <script>
 	import Publication from "./Publication.svelte";
 	import NewPub from "./NewPub.svelte";
-
-	import { Dapp, DappLogic } from "../js/app"
-
-	const logic = new DappLogic();
 	
-	let top;
-
-	logic.init()
-	.then(() => {
-		console.log("then", logic)
-		top = logic.current; 
-	})
-	
-	$: top = logic.publications[0]; 
-	$: console.log(`cur ${JSON.stringify(logic.current)}`);
-	$: console.log(`top ${JSON.stringify(logic.topPub)}`);
-	$: console.log(`pub ${JSON.stringify(logic.publications[0])}`);
+	import { Dapp } from "../js/app"
+	import { currentPub } from '../js/stores';
 
 
+	let current = {};
 
+	const dapp = new Dapp()
 	
 
-	/* const res = Dapp.init()
 
-	res.then(r => {
+	currentPub.subscribe(pub => current = pub);
+	
 
-		setTimeout(() => {top = Object.values(r.publications)[0]}, 3500)
+	
+	$: console.log(`pub ${JSON.stringify(current)}`);
 
-	}); */
 
-
-	$: Dapp.current = top; // pubs[1];
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
@@ -48,7 +34,7 @@
 
 <main>
 	<section>
-		<Publication pub={ Dapp.current }/>
+		<Publication pub={ current }/>
 		<NewPub/>
 	</section>
 
