@@ -5,7 +5,11 @@
 
 <article>
 
-  { #if pub.type == "link" }
+  { #if !pub }
+
+    <span>No publications ¯\_(ツ)_/¯</span>
+
+  { :else if pub.type == "link" }
     <a href={pub.link} target="_blank" noopener noreferrer >
       { #if pub.text }
         { pub.text }
@@ -53,7 +57,7 @@
     align-items: center;
   }
 
-  a {
+  a, span {
     overflow: auto;
     word-break:break-all;
     font-size: 3.5vw;

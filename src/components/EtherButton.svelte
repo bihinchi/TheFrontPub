@@ -66,7 +66,7 @@
     .glow-on-hover:active {
         /* color: rgb(23, 70, 112) */
         color: white;
-        box-shadow: 0.1vw 0.1vh 5.2vw rgb(8, 3, 87);
+        box-shadow: 0.0vw 0.0vh 4.2vw  rgb(8, 3, 87);
     }
 
     .glow-on-hover:active:after {
