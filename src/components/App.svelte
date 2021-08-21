@@ -3,33 +3,34 @@
 	import Publication from "./Publication.svelte";
 	import NewPub from "./NewPub.svelte";
 
-	import { Dapp } from "../js/app"
+	import { Dapp, DappLogic } from "../js/app"
+
+	const logic = new DappLogic();
+	
+	let top;
+
+	logic.init()
+	.then(() => {
+		console.log("then", logic)
+		top = logic.current; 
+	})
+	
+	$: top = logic.publications[0]; 
+	$: console.log(`cur ${JSON.stringify(logic.current)}`);
+	$: console.log(`top ${JSON.stringify(logic.topPub)}`);
+	$: console.log(`pub ${JSON.stringify(logic.publications[0])}`);
+
+
 
 	
-	const res = Dapp.init()
 
-	const pubs = [ {	
-			link: "http://wikipedia.org",
-			type: "link",
-		}, {
-			link: "https://www.highreshdwallpapers.com/wp-content/uploads/2014/03/Wonderful-HD-Space-Scene.jpg",
-			type: "image",
-		}, {
-			link: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-			type: "video",
+	/* const res = Dapp.init()
 
-		}, {
-			link: "https://wikipedia.org",
-			type: "iframe",
-		}
-	]
-	let top = pubs[0];
-	
 	res.then(r => {
 
 		setTimeout(() => {top = Object.values(r.publications)[0]}, 3500)
 
-	});
+	}); */
 
 
 	$: Dapp.current = top; // pubs[1];
