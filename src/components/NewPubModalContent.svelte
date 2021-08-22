@@ -9,10 +9,9 @@
         extra = { linkText : "", imageLink : "" };
 
 
-
   const onSubmit = () => {
-    document.getElementById("form").reportValidity()
-    publish(link, selectedType, JSON.stringify(extra), stake.toString());
+    document.getElementById("form").reportValidity();
+    //publish(link, selectedType, JSON.stringify(extra), stake.toString());
 		()=>getModal().close()
   }
 
@@ -64,7 +63,7 @@
 
   <ul>
     <li>
-      <input bind:value={stake} type="number" placeholder="Bet value" min="0.001" step="0.0001" required/>
+      <input bind:value={stake} type="number" placeholder="Bet value" min="0.001" max="1000" step="0.0001" required/>
     </li>
   </ul>
 

@@ -170,8 +170,6 @@ export class Dapp {
         value:  web3.utils.toWei(stake, "ether"),
         gas: 3000000
       })
-    .then((result) => console.log("recept:", result))
-    .catch((error) => console.error(error));
 }
 
 
