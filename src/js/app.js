@@ -6,7 +6,6 @@ import Web3 from "./web3";
 const MIN5 = 300
 
 
-
 export class Dapp {
 
   constructor() {
@@ -164,9 +163,16 @@ export class Dapp {
     
   }
 
-  get current() {
-    return this.topPub;
-  }
+  publishNew(link, type, extra, stake) {
+
+    return this.Publication.methods.publish(link, type, extra).send( 
+      { from: this.account, 
+        value:  web3.utils.toWei(stake, "ether"),
+        gas: 3000000
+      })
+    .then((result) => console.log("recept:", result))
+    .catch((error) => console.error(error));
+}
 
 
 
@@ -441,8 +447,6 @@ export const Dappp = {
       var extra = "Example" // $("#addescription").val();
       var price = "1" // $("#advalue").val() || 0.01;
       const pubType = "link"
-
-
 
       return Dapp.Publication.methods.publish(link, pubType, extra).send( 
         { from: Dapp.account, 

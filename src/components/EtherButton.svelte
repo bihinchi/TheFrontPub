@@ -49,18 +49,18 @@
     .glow-on-hover:before {
         content: '';
         background: linear-gradient(45deg, #040118, #44388a, #8887b3, #e6e6f5, #9a9beb, #67a5d8, #314ef3, #270f77, #0a0331);
+        background-size: 400%;
         position: absolute;
         top: -0.18vh;
-        left:-0.22vw;
-        background-size: 400%;
+        left:-0.2vw;
+        height: calc(100% + 0.36vh);
+        width: calc(100% + 0.4vw);
         z-index: -1;
         filter: blur(5px);
-        width: calc(100% + 0.44vw);
-        height: calc(100% + 0.36vh);
         animation: glowing 20s linear infinite;
-        opacity: 0;
         transition: opacity .3s ease-in-out;
         border-radius: 2.3vw;
+        opacity: 0;
     }
 
     .glow-on-hover:active {

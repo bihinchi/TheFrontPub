@@ -1,10 +1,19 @@
 <script>
-
+  
   import EtherButton from "./EtherButton.svelte";
   import { getModal } from './Modal.svelte';
+  
+  export let publish;
+  
+  let link, stake = 0.001, selectedType = "link", 
+        extra = { linkText : "", imageLink : "" };
 
-  const publish = () => {
-    ()=>getModal().close()
+
+
+  const onSubmit = () => {
+    document.getElementById("form").reportValidity()
+    publish(link, selectedType, JSON.stringify(extra), stake.toString());
+		()=>getModal().close()
   }
 
   const publicationTypes = [
@@ -14,13 +23,10 @@
     { type: "iframe", text: "Iframe"},
   ]
 
-  let selectedType = "link";
-
 </script>
 
 
-<form action="#" on:submit|preventDefault={publish}>
-  <!-- <h4>New publication:</h4> -->
+<form id="form" action="#" on:submit|preventDefault>
   <ul>
 
     <li id="typeLi">
@@ -35,20 +41,20 @@
     </li>
     
     <li>
-      <input id="adlink" placeholder="Link to the publication" type="url"/>
+      <input bind:value={link} placeholder="URL of the publication" type="url" required/>
     </li>
 
     
     { #if selectedType == "link" }
 
       <li>
-        <input id="linktext" placeholder="Text for the link (optional)" type="text"/>
+        <input bind:value={extra.linkText} placeholder="Text for the link (optional)" type="text"/>
       </li>
 
     { :else if selectedType == "image"}
       
       <li>
-          <input placeholder="Image link (Optional)" type="url">
+          <input bind:value={extra.imageLink} placeholder="Image link (Optional)" type="url">
       </li>
       
     { /if }
@@ -58,11 +64,11 @@
 
   <ul>
     <li>
-      <input id="advalue"  type="number" placeholder="Bet value" min="0.001" step="0.0001"/>
+      <input bind:value={stake} type="number" placeholder="Bet value" min="0.001" step="0.0001" required/>
     </li>
   </ul>
 
-  <EtherButton text="Connect" onClick={publish}/>
+  <EtherButton text="Connect" onClick={onSubmit}/>
 
 </form>
 
@@ -70,7 +76,6 @@
 
 
   #typeLi {
-    /* background-color: red; */
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -124,6 +129,11 @@
     box-shadow: 0.0vw 0.0vh 0.9vw rgb(19, 16, 54);
     outline: none;
   }
+
+  input:not(:placeholder-shown):invalid {
+    box-shadow: inset 0 0 0.45vw #f00;
+  }
+
 
   form {
     display: flex;

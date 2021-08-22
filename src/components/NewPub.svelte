@@ -5,6 +5,8 @@
 
     import { getModal } from './Modal.svelte';
 
+    export let publish;
+
 </script>
 
 <article>
@@ -12,7 +14,7 @@
 </article>
 
 <Modal>
-	<NewPubModalContent/>
+	<NewPubModalContent {publish}/>
 </Modal>
 
 <style>

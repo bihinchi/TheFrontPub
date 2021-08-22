@@ -7,17 +7,12 @@
 	import { currentPub } from '../js/stores';
 
 
+
 	let current = {};
 
 	const dapp = new Dapp()
-	
-
 
 	currentPub.subscribe(pub => current = pub);
-	
-
-	
-	$: console.log(`pub ${JSON.stringify(current)}`);
 
 
 	
@@ -25,7 +20,6 @@
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
 		document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
 	}
-
 	calculateWindow();
 	window.visualViewport.addEventListener("resize", calculateWindow);
 
@@ -35,7 +29,7 @@
 <main>
 	<section>
 		<Publication pub={ current }/>
-		<NewPub/>
+		<NewPub publish={dapp.publishNew.bind(dapp)}/>
 	</section>
 
 </main>
