@@ -10,12 +10,13 @@
 </script>
 
 <article>
-    <EtherButton text="NEW PUBLICATION" onClick={()=>getModal().open()}/>
+    <EtherButton text="NEW PUBLICATION" onClick={()=>getModal("pub").open()}/>
 </article>
 
-<Modal>
+<Modal id="pub">
 	<NewPubModalContent {publish}/>
 </Modal>
+
 
 <style>
     article {

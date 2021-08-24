@@ -71,7 +71,6 @@ export class Dapp {
     
     if (Object.keys(pubs).length < 1) return;
 
-
     if (!this.topPub) this.topPub = Object.values(pubs).find(elem => elem.lastShownTime === 0);
   
     
@@ -164,12 +163,16 @@ export class Dapp {
   }
 
   publishNew(link, type, extra, stake) {
+    return new Promise((resolve, reject) => {
+      if (2+2 == 3) return reject({ status: "error", reason: "yo mama is too big"})
+      return resolve({ status: "sucess", receiptName: "super receipt" });
+    })
 
-    return this.Publication.methods.publish(link, type, extra).send( 
+    /* return this.Publication.methods.publish(link, type, extra).send( 
       { from: this.account, 
         value:  web3.utils.toWei(stake, "ether"),
         gas: 3000000
-      })
+      }) */
 }
 
 

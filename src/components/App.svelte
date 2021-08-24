@@ -6,8 +6,6 @@
 	import { Dapp } from "../js/app"
 	import { currentPub } from '../js/stores';
 
-
-
 	let current = {};
 
 	const dapp = new Dapp()

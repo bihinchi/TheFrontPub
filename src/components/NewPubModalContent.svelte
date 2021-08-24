@@ -1,18 +1,39 @@
 <script>
   
+  import StatusModalContent from "./StatusModalContent.svelte";
   import EtherButton from "./EtherButton.svelte";
+  import Modal from './Modal.svelte'
+  
   import { getModal } from './Modal.svelte';
   
   export let publish;
-  
-  let link, stake = 0.001, selectedType = "link", 
-        extra = { linkText : "", imageLink : "" };
+
+  let link, stake, status, selectedType = "link", 
+  extra = { linkText : "", imageLink : "" };
 
 
   const onSubmit = () => {
-    document.getElementById("form").reportValidity();
-    //publish(link, selectedType, JSON.stringify(extra), stake.toString());
-		()=>getModal().close()
+
+    //document.getElementById("form").reportValidity();
+
+    //if (stake < 0.001 || !link) return;
+
+    stake = ""
+
+    publish(link, selectedType, JSON.stringify(extra), stake.toString())
+    .then(receipt => {
+      console.log(receipt);
+      receipt.status = "sucess"
+      status = receipt
+  		getModal("pub").close()
+  		getModal("status").open()
+    })
+    .catch(error => {
+      status = error
+  		getModal("status").open()
+    });
+
+
   }
 
   const publicationTypes = [
@@ -63,13 +84,18 @@
 
   <ul>
     <li>
-      <input bind:value={stake} type="number" placeholder="Bet value" min="0.001" max="1000" step="0.0001" required/>
+      <input bind:value={stake} type="number" placeholder="Bet value (ETH)" min="0.001" max="1000" step="0.0001" required/>
     </li>
   </ul>
 
   <EtherButton text="Connect" onClick={onSubmit}/>
 
 </form>
+
+
+<Modal id="status">
+  <StatusModalContent {status}/>
+</Modal>
 
 <style>
 
@@ -155,6 +181,11 @@
   ul:last-of-type {
     margin-bottom: 1.4vh;
   }
+
+  ul:last-of-type input {
+    min-width: 22vw;
+  }
+
 
 
 </style>
