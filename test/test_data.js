@@ -1,5 +1,89 @@
 
-const initScores = [
+const newEventTests = [
+
+    {
+        title: "new came less than 5 min after the initial",
+        events : [ {
+            link: 1,
+            score: 1,
+            time: 1630000000
+        } ],
+
+        newEvents : [ {
+            link: 2,
+            score: 1,
+            time: 1630000200
+        } ],
+
+        top : 1,
+        initTime: 1630000100,
+    },
+
+    {
+        title: "new came more than 5 min after the initial",
+        events : [ {
+            link: 1,
+            score: 1,
+            time: 1630000000
+        } ],
+
+        newEvents : [ {
+            link: 2,
+            score: 1,
+            time: 1630000350
+        } ],
+
+        top : 2,
+        initTime: 1630000100,
+    },
+
+    {
+        title: "initial, 5 min, the first new, less than 5 more minutes, the second new",
+        events : [ {
+            link: 1,
+            score: 1,
+            time: 1630000000
+        } ],
+
+        newEvents : [ {
+            link: 2,
+            score: 1,
+            time: 1630000350
+        }, {
+            link: 3,
+            score: 1,
+            time: 1630000450
+        } ],
+
+        top : 2,
+        initTime: 1630000100,
+    },
+
+    {
+        title: "initial, 6 min, the first new, 5 more minutes, the second new",
+        events : [ {
+            link: 1,
+            score: 1,
+            time: 1630000000
+        } ],
+
+        newEvents : [ {
+            link: 2,
+            score: 1,
+            time: 1630000360
+        }, {
+            link: 3,
+            score: 1,
+            time: 1630000661
+        } ],
+
+        top : 3,
+        initTime: 1630000100,
+    },
+
+]
+
+const initScoreTests = [
     {
         title: "one event fresh",
         events : [ {
@@ -234,5 +318,6 @@ const initScores = [
 
 
 module.exports = {
-    initScores
+    initScoreTests,
+    newEventTests
 }
