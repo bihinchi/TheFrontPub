@@ -12,7 +12,6 @@ class MockDapp {
       this.now = now
 
       this.init()
-  
     }
   
     init() {
@@ -48,7 +47,6 @@ class MockDapp {
 
         if (!this.topPub) this.topPub = Object.values(pubs).find(elem => elem.lastShownTime === 0);
 
-
         let timeDiff = 0;
 
         while (this.minShowTime < now) {
@@ -57,7 +55,6 @@ class MockDapp {
 
             const minTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
             this.minShowTime = minTime;
-
 
             const sorted = sortedKeys(pubs, this.minShowTime );
 
@@ -68,7 +65,12 @@ class MockDapp {
                 const pub = pubs[keys[0]];
                 this.topPub = pub
 
-                pub.publishedFor += now - (this.minShowTime || pub.time);
+                timeDiff = now - (this.minShowTime || pub.time);
+
+                this.minShowTime += timeDiff;
+                pub.lastShownTime += timeDiff;
+                pub.publishedFor += timeDiff;
+
                 pub.score = pub.initialScore - scoreReduction(pub.publishedFor);
                 if (pub.score <= 0) {
                     delete pubs[keys[0]];
@@ -91,34 +93,30 @@ class MockDapp {
                 // If topPub changed, reset its last published timer
                 if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
 
-
                 // instantiate secondTopPub with first pub that is not topPub
                 let secondTopScorePub = pubs[keys[0]] === topScorePub ? pubs[keys[1]] : pubs[keys[0]];  
-
 
                 let minTimeDiff = Infinity;
 
                 for (const [key, pub] of Object.entries(pubs)) {
-                    const scoreSmaller = pub.score < topScorePub.score, notInRecent = !sortedRecent.includes(key);
-                    if (pub === topScorePub || ( scoreSmaller ) ) continue;
+                    if (pub === topScorePub || pub.score < topScorePub.score) continue;
 
-                    const tempTimeDiff = !scoreSmaller && notInRecent ? (pub.time - this.minShowTime) 
-                                                                        : reverseScore(topScorePub.score - pub.score)
+                    const tempTimeDiff = !sortedRecent.includes(key) ? (pub.time - this.minShowTime) 
+                                                                : reverseScore(topScorePub.score - pub.score)
 
                     if (minTimeDiff > tempTimeDiff) {
                         minTimeDiff = tempTimeDiff;
                         secondTopScorePub = pub;
                     }
-
                 }
 
                 timeDiff = minTimeDiff;
 
-
-                if (timeDiff < MIN5 && topScorePub.lastShownTime < MIN5) timeDiff = MIN5 - topScorePub.lastShownTime;
+                if (timeDiff < MIN5 && topScorePub.lastShownTime + timeDiff < MIN5) timeDiff = MIN5 - topScorePub.lastShownTime;
                 if (timeDiff < 0) timeDiff = 20;        
                 if (this.minShowTime + timeDiff > now) timeDiff = now - this.minShowTime;
 
+                this.minShowTime += timeDiff
                 topScorePub.publishedFor += timeDiff;
                 topScorePub.lastShownTime += timeDiff;
 
@@ -132,11 +130,13 @@ class MockDapp {
                     topScorePub.score = newScore;
                 }
 
-                this.minShowTime += timeDiff
                 this.topPub = topScorePub;
             }
 
         }
+
+        //setTimeout(this.initScores.bind(this), this.minShowTime - now);
+
     }
 
   
@@ -145,7 +145,24 @@ class MockDapp {
         if (2+2 == 3) return reject({ status: "error", reason: "yo mama is too big"})
         return resolve({ status: "sucess", receiptName: "super receipt" });
       })
-  }
+    }
+
+    addEvent(event, now=null) {
+        this.publications[event.link] = {
+            link : event.link,
+            type : event.type,
+            extra : event.extra,
+            initialScore : event.score,
+            time : event.time,
+            score : event.score,
+            lastShownTime : 0,
+            publishedFor: 0,
+        }
+
+        this.now = now || (event.time + 1)
+
+        this.initScores();
+    }
     
 }
 
