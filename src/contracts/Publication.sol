@@ -30,7 +30,7 @@ contract Publication {
     function publish(string calldata _link, 
                     string calldata _type,
                     string calldata _extra) external payable {
-        
+       
        emit newPublished(_link, _type, _extra, msg.value, block.timestamp);
     }
 
