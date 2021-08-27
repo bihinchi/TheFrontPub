@@ -1,6 +1,7 @@
 <script>
   
   import StatusModalContent from "./StatusModalContent.svelte";
+  import Publication from "./Publication.svelte"
   import EtherButton from "./EtherButton.svelte";
   import Modal from './Modal.svelte'
   
@@ -8,19 +9,23 @@
   
   export let publish;
 
-  let link, stake, status, selectedType = "link", 
+  let link, stake, status, type = "link", 
   extra = { linkText : "", imageLink : "" };
 
+  let pub = {};
+  $: pub = { link, type, extra }
 
-  const onSubmit = () => {
 
-    //document.getElementById("form").reportValidity();
+  const onPreviewClick = () => {
+    document.forms[0].elements[1].reportValidity()
+    getModal("preview").open()
+  }
+  
 
-    //if (stake < 0.001 || !link) return;
+  const onPublishClick = () => {
+    if (!document.forms[0].reportValidity()) return;
 
-    stake = ""
-
-    publish(link, selectedType, JSON.stringify(extra), stake.toString())
+    publish(link, type, JSON.stringify(extra), stake.toString())
     .then(receipt => {
       console.log(receipt);
       receipt.status = "sucess"
@@ -51,7 +56,7 @@
 
     <li id="typeLi">
       <label for="pubType">Type:</label>
-      <select id="pubType" bind:value={selectedType}>
+      <select id="pubType" bind:value={type}>
         {#each publicationTypes as pubType}
         <option value={pubType.type}>
           {pubType.text}
@@ -65,13 +70,13 @@
     </li>
 
     
-    { #if selectedType == "link" }
+    { #if type == "link" }
 
       <li>
         <input bind:value={extra.linkText} placeholder="Text for the link (optional)" type="text"/>
       </li>
 
-    { :else if selectedType == "image"}
+    { :else if type == "image"}
       
       <li>
           <input bind:value={extra.imageLink} placeholder="Image link (Optional)" type="url">
@@ -88,7 +93,10 @@
     </li>
   </ul>
 
-  <EtherButton text="Connect" onClick={onSubmit}/>
+  <div>
+    <button type="button" on:click={onPreviewClick}>Preview</button>
+    <EtherButton text="Connect" onClick={onPublishClick}/>
+  </div>
 
 </form>
 
@@ -97,7 +105,25 @@
   <StatusModalContent {status}/>
 </Modal>
 
+
+<Modal id="preview">
+  <div id="preview-content">
+    <Publication { pub } />
+  </div>
+</Modal>
+
+
+
+
 <style>
+
+  #preview-content {
+    min-height: 80vh;
+    min-width: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
 
   #typeLi {
@@ -147,15 +173,17 @@
   }
 
   input:focus {
-    padding: 1.7vh 2.2vw;
-    border-radius: 3vw;
     border: 0.3vw solid #0a131b;
-    margin: 2vh auto;
     box-shadow: 0.0vw 0.0vh 0.9vw rgb(19, 16, 54);
     outline: none;
   }
 
-  input:not(:placeholder-shown):invalid {
+  input:not(:placeholder-shown):focus:invalid {
+    box-shadow: 0.0vw 0.0vh 0.9vw rgb(19, 16, 54), inset 0 0 0.45vw #f00;
+  }
+
+
+  input:not(:placeholder-shown):not(:focus):invalid {
     box-shadow: inset 0 0 0.45vw #f00;
   }
 

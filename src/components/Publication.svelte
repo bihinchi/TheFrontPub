@@ -1,5 +1,7 @@
 <script>
   export let pub;
+
+  $: console.log(pub);
 </script>
 
 
@@ -10,18 +12,25 @@
     <span>No publications ¯\_(ツ)_/¯</span>
 
   { :else if pub.type == "link" }
-    <a href={pub.link} target="_blank" noopener noreferrer >
-      { #if pub.text }
-        { pub.text }
+    <a id="plainLink" href={pub.link} target="_blank" noopener noreferrer >
+      { #if pub.extra && pub.extra.linkText }
+        { pub.extra.linkText }
       { :else }
         { pub.link }
       { /if }
-      
     </a>
   
   { :else if pub.type == "image"}
 
-    <img src={pub.link} alt="Current publication">
+    { #if pub.extra && pub.extra.imageLink }
+      <a href={pub.extra.imageLink} target="_blank" noopener noreferrer>
+        <img src={pub.link} alt="Current publication">
+      </a>  
+    { :else }
+      <img src={pub.link} alt="Current publication">
+    { /if }
+
+
 
   { :else if pub.type == "video"}
 
@@ -57,7 +66,7 @@
     align-items: center;
   }
 
-  a, span {
+  #plainLink, span {
     overflow: auto;
     word-break:break-all;
     font-size: 3.5vw;
@@ -71,10 +80,11 @@
   img {
     border-radius: 1%;
     box-shadow: 0.1vw 0.1vh 1.5vw black;
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 75vw;
-    height: auto;
+    max-width: 95vw;
+    max-height: 88vh;
+    min-width: 50vw;
+    min-height: 50vh;
+
   }
 
   video {
