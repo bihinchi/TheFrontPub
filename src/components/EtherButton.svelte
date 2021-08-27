@@ -3,11 +3,16 @@
 
     export let text;
     export let onClick;
+    export let showLogo = true;
+    export let buttonStyle = ""
+
 </script>
 
-<button class="glow-on-hover" type="button" on:click={onClick}>
+<button class="glow-on-hover" type="button" style="{buttonStyle}" on:click={onClick}>
     <span>{text}</span>
-    <EthereumLogo  fill="white" />
+    { #if showLogo }
+        <EthereumLogo  fill="white" />
+    { /if }
 </button>
 
 <style>

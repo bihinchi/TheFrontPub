@@ -17,8 +17,8 @@
 
 
   const onPreviewClick = () => {
-    document.forms[0].elements[1].reportValidity()
-    getModal("preview").open()
+    if (document.forms[0].elements[1].reportValidity())
+        getModal("preview").open()
   }
   
 
@@ -93,9 +93,9 @@
     </li>
   </ul>
 
-  <div>
-    <button type="button" on:click={onPreviewClick}>Preview</button>
-    <EtherButton text="Connect" onClick={onPublishClick}/>
+  <div id="button-group">
+    <EtherButton text="Preview" onClick={onPreviewClick} showLogo={false} buttonStyle="margin-right: 3vw;"/>
+    <EtherButton text="Publish" onClick={onPublishClick}/>
   </div>
 
 </form>
@@ -137,6 +137,15 @@
   #typeLi > label {
     flex-grow: 1;
     margin-left: 1.5vw
+  }
+
+  #button-group {
+    display: flex;
+    margin-top: 2vh;
+  }
+
+  :global(#button-group:first-child) {
+    margin-right: 3vw;
   }
 
 

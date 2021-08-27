@@ -1,7 +1,5 @@
 <script>
   export let pub;
-
-  $: console.log(pub);
 </script>
 
 
@@ -99,11 +97,9 @@
     min-width: 100%;
     min-height: 100%;
     min-width: 90vw;
-    width: auto;
-    height: auto;
+    min-height: 70vh;
     border: 0.4px solid #7e7d7d;
   }
-
 
 </style>
 
