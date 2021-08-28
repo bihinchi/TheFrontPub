@@ -79,102 +79,101 @@ export class Dapp {
     while (this.minShowTime < now) {
 
       const keys = Object.keys(pubs);
+      
+      this.minShowTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
 
-      const minTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
-      this.minShowTime = minTime;
+      if (keys.length == 1) {
 
+          const pub = pubs[keys[0]];
 
-      const sorted = sortedKeys(pubs, this.minShowTime);
+          this.topPub = pub
 
-      if (sorted.length == 0) this.minShowTime += 5;
+          timeDiff = now - this.minShowTime;
 
-      else if (keys.length == 1) {
+          this.minShowTime += timeDiff;
+          pub.lastShownTime += timeDiff;
+          pub.publishedFor += timeDiff;
 
-        const pub = pubs[keys[0]];
-
-        this.topPub = pub
-        currentPub.set(this.topPub);
-
-        timeDiff = now - (this.minShowTime || pub.time);
-
-        this.minShowTime += timeDiff;
-        pub.lastShownTime += timeDiff;
-        pub.publishedFor += timeDiff;
-
-
-        pub.score = pub.initialScore - scoreReduction(pub.publishedFor);
-        if (pub.score <= 0) {
-          delete pubs[keys[0]];
-          this.topPub = {}
-        }
-        break
+          pub.score = pub.initialScore - scoreReduction(pub.publishedFor);
+          if (pub.score <= 0) {
+              delete pubs[keys[0]];
+              this.topPub = {}
+          }
+          break
 
       } else {
+          // more than 1 event
 
-        const sortedRecent = sorted//sorted.filter(key => pubs[key].time <= this.minShowTime);
+          const sortedRecent = sortedKeys(pubs, this.minShowTime );
 
-
-        // Advance 5 sec forward if there are no pubs yet
-        if (!sortedRecent.length) {
-          this.minShowTime += 5;
-          continue
-        }
-
-        let topScorePub = pubs[sortedRecent[0]]
-
-        // If topPub changed, reset its last published timer
-        if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
+          let topScorePub = pubs[sortedRecent[0]]
+          let calcTargetPub = pubs[keys[0]] === topScorePub ? pubs[keys[1]] : pubs[keys[0]];  
 
 
-        // instantiate secondTopPub with first pub that is not topPub
-        let secondTopScorePub = pubs[keys[0]] === topScorePub ? pubs[keys[1]] : pubs[keys[0]];  
+          // If topPub changed, reset its last published timer
+          if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
+
+          if (this.topPub.lastShownTime < MIN5) {
+
+              if (topScorePub.lastShownTime + MIN5 <= now) timeDiff = MIN5 - this.topPub.lastShownTime;
+              else timeDiff = now - topScorePub.lastShownTime;
+
+          } else {
+              // the top pub was shown for at least 5 min
+
+              let minTimeDiff = Infinity;
+
+              let tempTimeDiff;
+
+              if (this.minShowTime == 1630000660) {
+                  console.log("debugger here");
+              }
+
+              for (const [key, pub] of Object.entries(pubs)) {
+
+                  if (pub === topScorePub) continue;
+
+                  tempTimeDiff =  sortedRecent.includes(key) ? reverseScore(topScorePub.score - pub.score)
+                                                                  : pub.time - this.minShowTime
+                
+                  if (tempTimeDiff > 0 && minTimeDiff > tempTimeDiff) {
+                      minTimeDiff = tempTimeDiff;
+                      calcTargetPub = pub;
+                  }
+              }
+              
+              // progress 5 sec in case of error
+              timeDiff = 0 < minTimeDiff && minTimeDiff < Infinity ? minTimeDiff : 5; 
+
+          } // after top, calcTarget and timeDiff are calculated 
 
 
-        let minTimeDiff = Infinity;
+          this.minShowTime += timeDiff
+          topScorePub.publishedFor += timeDiff;
+          topScorePub.lastShownTime += timeDiff;
 
-        for (const [key, pub] of Object.entries(pubs)) {
+          let newScore = topScorePub.initialScore - scoreReduction(topScorePub.publishedFor);
 
-          if (pub === topScorePub || pub.score < topScorePub.score) continue;
+          // in case of small score diff in results, make sure,
+          // that the old pub value is smaller to avoid
+          // small score diff calculation the next round
+          if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
 
-          const tempTimeDiff = !sortedRecent.includes(key) ? (pub.time - this.minShowTime) 
-                                                          : reverseScore(topScorePub.score - pub.score)
+          if (newScore <= 0) {
 
-          if (minTimeDiff > tempTimeDiff) {
-            minTimeDiff = tempTimeDiff;
-            secondTopScorePub = pub;
+              topScorePub = calcTargetPub;
+              delete pubs[sortedRecent[0]];
+
+          } else {
+              topScorePub.score = newScore;
           }
 
-        }
-
-        timeDiff = minTimeDiff;
-        
-  
-        if (timeDiff < MIN5 && topScorePub.lastShownTime + timeDiff < MIN5) timeDiff = MIN5 - topScorePub.lastShownTime;
-        if (timeDiff < 0) timeDiff = 20;        
-        if (this.minShowTime + timeDiff > now) timeDiff = now - this.minShowTime;
-        
-        this.minShowTime += timeDiff
-        topScorePub.publishedFor += timeDiff;
-        topScorePub.lastShownTime += timeDiff;
-  
-        let newScore = topScorePub.initialScore - scoreReduction(topScorePub.publishedFor);
-        if (Math.abs(newScore - secondTopScorePub.score) < 0.000001) newScore = secondTopScorePub.score - 0.000001;
-  
-        if (newScore <= 0) {
-          topScorePub = secondTopScorePub;
-          delete pubs[sorted[0]];
-        } else {
-          topScorePub.score = newScore;
-        }
-  
-        this.topPub = topScorePub;
-        currentPub.set(this.topPub);
+          this.topPub = topScorePub;
       }
 
     }
 
-    console.log(this.publications);
-    console.log(this.topPub);
+    currentPub.set(this.topPub);
 
   }
 
