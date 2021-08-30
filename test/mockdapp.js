@@ -88,10 +88,9 @@ class MockDapp {
                 // If topPub changed, reset its last published timer
                 if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
 
-                if (this.topPub.lastShownTime < MIN5) {
+                if (topScorePub.publishedFor === 0 || topScorePub.lastShownTime < MIN5) {
 
-                    if (topScorePub.lastShownTime + MIN5 <= now) timeDiff = MIN5 - this.topPub.lastShownTime;
-                    else timeDiff = now - topScorePub.lastShownTime;
+                    timeDiff = MIN5 - topScorePub.lastShownTime;
 
                 } else {
                     // the top pub was shown for at least 5 min
@@ -99,10 +98,6 @@ class MockDapp {
                     let minTimeDiff = Infinity;
 
                     let tempTimeDiff;
-
-                    if (this.minShowTime == 1630000660) {
-                        console.log("debugger here");
-                    }
 
                     for (const [key, pub] of Object.entries(pubs)) {
 
@@ -120,9 +115,15 @@ class MockDapp {
                     // progress 5 sec in case of error
                     timeDiff = 0 < minTimeDiff && minTimeDiff < Infinity ? minTimeDiff : 5; 
 
+                    // check if no time left
+                    timeDiff = Math.min(timeDiff, now - this.minShowTime)
+
                 } // after top, calcTarget and timeDiff are calculated 
 
-        
+
+                if (this.minShowTime + timeDiff > now) timeDiff = now - this.minShowTime 
+
+                
                 this.minShowTime += timeDiff
                 topScorePub.publishedFor += timeDiff;
                 topScorePub.lastShownTime += timeDiff;
@@ -173,6 +174,7 @@ class MockDapp {
         }
 
         this.now = now || (event.time + 1)
+        //this.minShowTime = Math.max(this.minShowTime, event.time)
 
         this.initScores();
     }

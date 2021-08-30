@@ -6,6 +6,8 @@ import Web3 from "./web3";
 const MIN5 = 300
 
 
+const History = [];
+
 export class Dapp {
 
   constructor() {
@@ -54,6 +56,7 @@ export class Dapp {
       if (!(event.returnValues._link in this.publications)) this.publications[event.returnValues._link] = {
           link : event.returnValues._link,
           type : event.returnValues._type,
+          extra: event.returnValues._extra.length > 30 ? JSON.parse(event.returnValues._extra) : {},
           desc : event.returnValues._extra,
           initialScore : parseFloat(web3.utils.fromWei(event.returnValues._score)),
           time : web3.utils.toNumber(event.returnValues._time),
@@ -86,7 +89,13 @@ export class Dapp {
 
           const pub = pubs[keys[0]];
 
+          if (pub !== this.topPub) {
+            if (this.topPub.lastShownTime) History.push({ pub: this.topPub, length: this.topPub.lastShownTime})
+            this.topPub.lastShownTime = 0
+          };
+
           this.topPub = pub
+
 
           timeDiff = now - this.minShowTime;
 
@@ -94,7 +103,18 @@ export class Dapp {
           pub.lastShownTime += timeDiff;
           pub.publishedFor += timeDiff;
 
-          pub.score = pub.initialScore - scoreReduction(pub.publishedFor);
+          const newScore = pub.initialScore - scoreReduction(pub.publishedFor);
+          
+          History.push({ 
+            pub: pub, 
+            scoreStart: pub.score, 
+            scoreEnd: newScore, 
+            length: timeDiff
+          })
+          
+          
+          pub.score = newScore
+
           if (pub.score <= 0) {
               delete pubs[keys[0]];
               this.topPub = {}
@@ -113,10 +133,9 @@ export class Dapp {
           // If topPub changed, reset its last published timer
           if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
 
-          if (this.topPub.lastShownTime < MIN5) {
+          if (topScorePub.publishedFor === 0 || topScorePub.lastShownTime < MIN5) {
 
-              if (topScorePub.lastShownTime + MIN5 <= now) timeDiff = MIN5 - this.topPub.lastShownTime;
-              else timeDiff = now - topScorePub.lastShownTime;
+              timeDiff = MIN5 - topScorePub.lastShownTime;
 
           } else {
               // the top pub was shown for at least 5 min
@@ -125,17 +144,13 @@ export class Dapp {
 
               let tempTimeDiff;
 
-              if (this.minShowTime == 1630000660) {
-                  console.log("debugger here");
-              }
-
               for (const [key, pub] of Object.entries(pubs)) {
 
                   if (pub === topScorePub) continue;
 
                   tempTimeDiff =  sortedRecent.includes(key) ? reverseScore(topScorePub.score - pub.score)
-                                                                  : pub.time - this.minShowTime
-                
+                                                                : pub.time - this.minShowTime
+              
                   if (tempTimeDiff > 0 && minTimeDiff > tempTimeDiff) {
                       minTimeDiff = tempTimeDiff;
                       calcTargetPub = pub;
@@ -145,8 +160,12 @@ export class Dapp {
               // progress 5 sec in case of error
               timeDiff = 0 < minTimeDiff && minTimeDiff < Infinity ? minTimeDiff : 5; 
 
+              // check if no time left
+              timeDiff = Math.min(timeDiff, now - this.minShowTime)
+
           } // after top, calcTarget and timeDiff are calculated 
 
+          if (this.minShowTime + timeDiff > now) timeDiff = now - this.minShowTime 
 
           this.minShowTime += timeDiff
           topScorePub.publishedFor += timeDiff;
@@ -159,6 +178,14 @@ export class Dapp {
           // small score diff calculation the next round
           if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
 
+
+          History.push({ 
+            pub: topScorePub, 
+            scoreStart: topScorePub.score, 
+            scoreEnd: newScore, 
+            length: timeDiff
+          })
+
           if (newScore <= 0) {
 
               topScorePub = calcTargetPub;
@@ -169,12 +196,59 @@ export class Dapp {
           }
 
           this.topPub = topScorePub;
+
       }
 
     }
 
     currentPub.set(this.topPub);
 
+    const newH = []
+    
+    let step = 0
+
+    for (; step < History.length; step++) {
+      const pub = History[step];
+
+      const ph = { 
+        link: pub.pub.link,
+        length: pub.length,
+        lengthTS: pub.length,
+        scoreStart: pub.scoreStart,
+        scoreEnd: pub.scoreEnd,
+        total: new Date(1000 * reverseScore(pub.pub.initialScore)).toISOString().substr(11, 8)
+      }
+
+      if (step != History.length - 1) {
+
+        const next = History[step+1];
+
+        if (next.link == pub.link) {
+
+          ph.length += next.length;
+          ph.lengthTS += next.length;
+
+          ph.scoreEnd = next.scoreEnd;
+          step += 1;
+        }
+
+      }
+
+      ph.length = new Date(1000 * ph.length).toISOString().substr(11, 8);
+      newH.push(ph);
+
+    }
+
+    for (const h of newH) {
+
+
+      console.log(`Showed ${h.link} for ${h.length} (${h.lengthTS})`)
+      console.log(`Score start: ${h.scoreStart}. Score end: ${h.scoreEnd} Total: ${h.total}`);
+      console.log("\n");
+
+    }
+    console.log(this.publications);
+    
   }
 
   publishNew(link, type, extra, stake) {
