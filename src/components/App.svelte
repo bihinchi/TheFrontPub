@@ -6,6 +6,11 @@
 	import { Dapp } from "../js/app"
 	import { currentPub } from '../js/stores';
 
+	import Modal from './Modal.svelte'
+    import { getModal } from './Modal.svelte';
+
+	import History from "./History.svelte"
+
 	let current = {};
 
 	const dapp = new Dapp()
@@ -21,6 +26,9 @@
 	window.visualViewport.addEventListener("resize", calculateWindow);
 
 
+
+
+
 </script>
 
 <main>
@@ -28,12 +36,30 @@
 		<Publication pub={ current }/>
 		<NewPub publish={dapp.publishNew.bind(dapp)}/>
 	</section>
-
 </main>
 
 
+<a id="history_opener" on:click={()=>getModal("history").open()}>History</a>
+
+<Modal id="history">
+	<History/>
+</Modal>
+
 <style>
+	:global(body) {
+		margin: 0;
+	}
 	
+	#history_opener {
+		position: absolute;
+		top: 5vh;
+		left: 5vw;
+	}
+
+	#history_opener:hover  {
+		cursor: pointer;
+	}
+
 	main {
 		margin: 0vw auto;
 	}

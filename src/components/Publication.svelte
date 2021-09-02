@@ -57,7 +57,7 @@
 <style>
 
   article {
-    height: 75%;
+    height: 72%;
     width: auto;
     display: flex;
     justify-content: center;
@@ -78,11 +78,10 @@
   img {
     border-radius: 1%;
     box-shadow: 0.1vw 0.1vh 1.5vw black;
-    max-width: 95vw;
-    max-height: 88vh;
-    min-width: 50vw;
-    min-height: 50vh;
-
+    max-width: 90vw;
+    max-height: 76vh;
+    min-width: 40vw;
+    min-height: 40vh;
   }
 
   video {
@@ -100,6 +99,8 @@
     min-height: 70vh;
     border: 0.4px solid #7e7d7d;
   }
+
+  
 
 </style>
 

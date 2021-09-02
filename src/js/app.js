@@ -1,12 +1,11 @@
 import * as AbiFile from '../contracts/build/Publication.json'
 import { currentPub } from './stores.js';
+import { history } from './stores.js';
+
 
 import Web3 from "./web3";
 
 const MIN5 = 300
-
-
-const History = [];
 
 export class Dapp {
 
@@ -17,7 +16,6 @@ export class Dapp {
     this.topPub = {};
     this.minShowTime = 0;
     this.firstTime = true;
-
     this.init();
   }
 
@@ -65,6 +63,8 @@ export class Dapp {
           publishedFor: 0,
         }
     }
+
+    //history.set([])
   }
 
   initScores () {
@@ -90,7 +90,8 @@ export class Dapp {
           const pub = pubs[keys[0]];
 
           if (pub !== this.topPub) {
-            if (this.topPub.lastShownTime) History.push({ pub: this.topPub, length: this.topPub.lastShownTime})
+            if (this.topPub.lastShownTime) 
+            //this.history.push({ pub: this.topPub, length: this.topPub.lastShownTime})
             this.topPub.lastShownTime = 0
           };
 
@@ -105,12 +106,20 @@ export class Dapp {
 
           const newScore = pub.initialScore - scoreReduction(pub.publishedFor);
           
-          History.push({ 
+          history.update(h => h = [...h, { 
+              pub: pub, 
+              scoreStart: pub.score, 
+              scoreEnd: newScore, 
+              length: timeDiff
+            }]
+          )
+
+          /* this.history.push({ 
             pub: pub, 
             scoreStart: pub.score, 
             scoreEnd: newScore, 
             length: timeDiff
-          })
+          }) */
           
           
           pub.score = newScore
@@ -179,12 +188,20 @@ export class Dapp {
           if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
 
 
-          History.push({ 
+          history.update(h => h = [...h, { 
+              pub: topScorePub, 
+              scoreStart: topScorePub.score, 
+              scoreEnd: newScore, 
+              length: timeDiff
+            }]
+          )
+
+          /* this.history.push({ 
             pub: topScorePub, 
             scoreStart: topScorePub.score, 
             scoreEnd: newScore, 
             length: timeDiff
-          })
+          }) */
 
           if (newScore <= 0) {
 
@@ -207,8 +224,8 @@ export class Dapp {
     
     let step = 0
 
-    for (; step < History.length; step++) {
-      const pub = History[step];
+    /* for (; step < this.history.length; step++) {
+      const pub = this.history[step];
 
       const ph = { 
         link: pub.pub.link,
@@ -219,35 +236,25 @@ export class Dapp {
         total: new Date(1000 * reverseScore(pub.pub.initialScore)).toISOString().substr(11, 8)
       }
 
-      if (step != History.length - 1) {
-
-        const next = History[step+1];
-
-        if (next.link == pub.link) {
-
-          ph.length += next.length;
-          ph.lengthTS += next.length;
-
-          ph.scoreEnd = next.scoreEnd;
-          step += 1;
-        }
-
-      }
-
       ph.length = new Date(1000 * ph.length).toISOString().substr(11, 8);
       newH.push(ph);
 
     }
 
-    for (const h of newH) {
+    this.history = [...this.history]
+    this.history = this.history   */  
+
+
+    /* for (const h of newH) {
 
 
       console.log(`Showed ${h.link} for ${h.length} (${h.lengthTS})`)
       console.log(`Score start: ${h.scoreStart}. Score end: ${h.scoreEnd} Total: ${h.total}`);
       console.log("\n");
 
-    }
-    console.log(this.publications);
+    } */
+    console.log("pubs:", this.publications);
+    console.log("history:", this.history);
     
   }
 

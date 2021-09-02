@@ -23,7 +23,6 @@
         margin-left: 1.0vw
     }
 
-
     button {
 
         display: flex;
