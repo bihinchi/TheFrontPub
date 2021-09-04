@@ -51,20 +51,22 @@ export class Dapp {
       toBlock: 'latest'
     })
     for (const event of events) {
+
+      const score = parseFloat(web3.utils.fromWei(event.returnValues._score));
+
       if (!(event.returnValues._link in this.publications)) this.publications[event.returnValues._link] = {
           link : event.returnValues._link,
           type : event.returnValues._type,
           extra: event.returnValues._extra.length > 30 ? JSON.parse(event.returnValues._extra) : {},
-          desc : event.returnValues._extra,
-          initialScore : parseFloat(web3.utils.fromWei(event.returnValues._score)),
           time : web3.utils.toNumber(event.returnValues._time),
-          score : parseFloat(web3.utils.fromWei(event.returnValues._score)),
+          maxPublishedFor: reverseScore(score),
+          initialScore : score,
+          score : score,
           lastShownTime : 0,
           publishedFor: 0,
         }
     }
 
-    //history.set([])
   }
 
   initScores () {
@@ -72,7 +74,7 @@ export class Dapp {
     const pubs = this.publications;
     const now = Date.now() / 1000;
     
-    if (Object.keys(pubs).length < 1) return;
+    if (pubs.length === 0) return;
 
     if (!this.topPub) this.topPub = Object.values(pubs).find(elem => elem.lastShownTime === 0);
   
@@ -91,20 +93,19 @@ export class Dapp {
 
           if (pub !== this.topPub) {
             if (this.topPub.lastShownTime) 
-            //this.history.push({ pub: this.topPub, length: this.topPub.lastShownTime})
             this.topPub.lastShownTime = 0
           };
 
           this.topPub = pub
 
-
-          timeDiff = now - this.minShowTime;
+          timeDiff = Math.min(now - this.minShowTime, pub.maxPublishedFor - pub.publishedFor)
 
           this.minShowTime += timeDiff;
           pub.lastShownTime += timeDiff;
           pub.publishedFor += timeDiff;
 
-          const newScore = pub.initialScore - scoreReduction(pub.publishedFor);
+          const newScore = pub.publishedFor <= pub.maxPublishedFor 
+                ? pub.initialScore - scoreReduction(pub.publishedFor) : 0;
           
           history.update(h => h = [...h, { 
               pub: pub, 
@@ -115,14 +116,6 @@ export class Dapp {
               endTime : (this.minShowTime + timeDiff) * 1000
             }]
           )
-
-          /* this.history.push({ 
-            pub: pub, 
-            scoreStart: pub.score, 
-            scoreEnd: newScore, 
-            length: timeDiff
-          }) */
-          
           
           pub.score = newScore
 
@@ -135,7 +128,17 @@ export class Dapp {
       } else {
           // more than 1 event
 
-          const sortedRecent = sortedKeys(pubs, this.minShowTime );
+          let sortedRecent = sortedKeys(pubs, this.minShowTime );
+
+          if (sortedRecent.length == 0) { 
+          /* 
+            this.minShowTime += 50;
+            continue;
+          
+          */
+           this.minShowTime = Math.min(...Object.values(pubs).map(pub => pub.time));
+           sortedRecent = sortedKeys(pubs, this.minShowTime)
+          }
 
           let topScorePub = pubs[sortedRecent[0]]
           let calcTargetPub = pubs[keys[0]] === topScorePub ? pubs[keys[1]] : pubs[keys[0]];  
@@ -169,25 +172,35 @@ export class Dapp {
               }
               
               // progress 5 sec in case of error
-              timeDiff = 0 < minTimeDiff && minTimeDiff < Infinity ? minTimeDiff : 5; 
+              timeDiff = 1 < minTimeDiff && minTimeDiff < Infinity ? minTimeDiff : 5; 
 
-              // check if no time left
-              timeDiff = Math.min(timeDiff, now - this.minShowTime)
+          }
 
-          } // after top, calcTarget and timeDiff are calculated 
+          timeDiff = Math.min(timeDiff, topScorePub.maxPublishedFor - topScorePub.publishedFor, now - this.minShowTime)
+          timeDiff = Math.max(timeDiff, 1)
 
-          if (this.minShowTime + timeDiff > now) timeDiff = now - this.minShowTime 
 
           this.minShowTime += timeDiff
           topScorePub.publishedFor += timeDiff;
           topScorePub.lastShownTime += timeDiff;
 
-          let newScore = topScorePub.initialScore - scoreReduction(topScorePub.publishedFor);
 
-          // in case of small score diff in results, make sure,
-          // that the old pub value is smaller to avoid
-          // small score diff calculation the next round
-          if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
+          let newScore;
+
+          if (topScorePub.publishedFor >= topScorePub.maxPublishedFor) {
+
+            newScore = 0
+
+          } else {
+
+            newScore = topScorePub.initialScore - scoreReduction(topScorePub.publishedFor);
+  
+            // in case of small score diff in results, make sure,
+            // that the old pub value is smaller to avoid
+            // small score diff calculation the next round
+            if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
+
+          }
 
 
           history.update(h => h = [...h, { 
@@ -200,18 +213,10 @@ export class Dapp {
             }]
           )
 
-          /* this.history.push({ 
-            pub: topScorePub, 
-            scoreStart: topScorePub.score, 
-            scoreEnd: newScore, 
-            length: timeDiff
-          }) */
 
           if (newScore <= 0) {
-
               topScorePub = calcTargetPub;
               delete pubs[sortedRecent[0]];
-
           } else {
               topScorePub.score = newScore;
           }
@@ -220,44 +225,12 @@ export class Dapp {
 
       }
 
+    
     }
 
     currentPub.set(this.topPub);
 
-    const newH = []
-    
-    let step = 0
 
-    /* for (; step < this.history.length; step++) {
-      const pub = this.history[step];
-
-      const ph = { 
-        link: pub.pub.link,
-        length: pub.length,
-        lengthTS: pub.length,
-        scoreStart: pub.scoreStart,
-        scoreEnd: pub.scoreEnd,
-        total: new Date(1000 * reverseScore(pub.pub.initialScore)).toISOString().substr(11, 8)
-      }
-
-      ph.length = new Date(1000 * ph.length).toISOString().substr(11, 8);
-      newH.push(ph);
-
-    }
-
-    this.history = [...this.history]
-    this.history = this.history   */  
-
-
-    /* for (const h of newH) {
-
-
-      console.log(`Showed ${h.link} for ${h.length} (${h.lengthTS})`)
-      console.log(`Score start: ${h.scoreStart}. Score end: ${h.scoreEnd} Total: ${h.total}`);
-      console.log("\n");
-
-    } */
-    console.log("pubs:", this.publications);
     
   }
 
@@ -282,12 +255,17 @@ export class Dapp {
 
 function scoreReduction(s) {
   const time = s / 3600;
-  //if (time <= 0.05) return 0;
+  if (time <= 1) return 0.05*time;
   return 0.00014038530109067304 * time * time + 0.03779471529884403935 * time + 0.01206489939977473114
 }
 
 
 function reverseScore(price) {
+
+  // linear
+  if (price <= 0.05) return price / 0.05
+
+  //squared
   const a = 0.00014038530109067304;
   const b = 0.03779471529884403935;
   const c = 0.01206489939977473114 - price;
