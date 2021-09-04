@@ -50,32 +50,30 @@
   
   
   <style>
-  
+
     div {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-width: 30vw;
-      min-height: 30vh;
-    }
-
-    div > * {
-        max-width: 95%;
-        max-height: 95%;
-    }
-
-    div > :not(#plainLink) {
-        min-width: 85%;
-        min-height: 85%;
+      min-height: 15vh;  
+      max-width: 36vw;
     }
   
+    div * {
+        max-width: 35vw;
+        max-height: 29vh;  
+    }
+
+    div :not(a) {
+        min-width: 28vw;
+        min-height: 27vh;
+    }
+
     #plainLink {
       overflow: auto;
       word-break:break-all;
-      font-size: 3.5vw;
-      max-width: 90%;
-      max-height: 90%;
       text-align: center;
+      min-height: 3vh;
     }
   
     img {

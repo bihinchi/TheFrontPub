@@ -5,7 +5,7 @@
 
 <article>
 
-  { #if !pub }
+  { #if !pub || pub.link }
 
     <span>No publications ¯\_(ツ)_/¯</span>
 
@@ -75,7 +75,7 @@
     text-align: center;
   }
 
-  img {
+  article img {
     border-radius: 1%;
     box-shadow: 0.1vw 0.1vh 1.5vw black;
     max-width: 90vw;
@@ -100,7 +100,7 @@
     border: 0.4px solid #7e7d7d;
   }
 
-  
+
 
 </style>
 

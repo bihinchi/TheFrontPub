@@ -110,7 +110,9 @@ export class Dapp {
               pub: pub, 
               scoreStart: pub.score, 
               scoreEnd: newScore, 
-              length: timeDiff
+              length: timeDiff,
+              startTime : this.minShowTime * 1000,
+              endTime : (this.minShowTime + timeDiff) * 1000
             }]
           )
 
@@ -192,7 +194,9 @@ export class Dapp {
               pub: topScorePub, 
               scoreStart: topScorePub.score, 
               scoreEnd: newScore, 
-              length: timeDiff
+              length: timeDiff,
+              startTime : this.minShowTime * 1000,
+              endTime : (this.minShowTime + timeDiff) * 1000
             }]
           )
 
@@ -254,7 +258,6 @@ export class Dapp {
 
     } */
     console.log("pubs:", this.publications);
-    console.log("history:", this.history);
     
   }
 
@@ -279,6 +282,7 @@ export class Dapp {
 
 function scoreReduction(s) {
   const time = s / 3600;
+  //if (time <= 0.05) return 0;
   return 0.00014038530109067304 * time * time + 0.03779471529884403935 * time + 0.01206489939977473114
 }
 
