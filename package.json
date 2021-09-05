@@ -6,7 +6,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear",
-    "test" : "mocha"
+    "test": "mocha"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@rollup/plugin-json": "^4.1.0",
+    "lodash": "^4.17.21",
     "mocha": "^9.1.0",
     "rollup-plugin-node-builtins": "^2.0.0",
     "rollup-plugin-node-globals": "^1.4.0",

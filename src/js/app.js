@@ -177,9 +177,7 @@ export class Dapp {
           }
 
           timeDiff = Math.min(timeDiff, topScorePub.maxPublishedFor - topScorePub.publishedFor, now - this.minShowTime)
-          timeDiff = Math.max(timeDiff, 1)
-
-
+          
           this.minShowTime += timeDiff
           topScorePub.publishedFor += timeDiff;
           topScorePub.lastShownTime += timeDiff;

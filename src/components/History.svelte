@@ -1,28 +1,23 @@
 <script>
     import HistoryRecord from "./HistoryRecord.svelte";
-
-    import { onMount, onDestroy } from "svelte";
 	import { history } from '../js/stores';
+    import debounce from 'lodash/debounce'
 
     
-    let scroller, last, records = [], start = 0, end, historytime = new Date();
+    let scroller, records = [], start = 0, end, historytime = new Date();
 
     const getSubSet = (records) => {
         if (!records.length) return records;
-        end ??=  records.length > 10 ? 10 : records.length;
+        end ??=  records.length > 20 ? 20 : records.length;
         return records.slice(start, end)
     }
 
     $: records = getSubSet($history)
 
-    // onDestroy(history.subscribe((value) => records = value));
+    const timeUpdater = () => {
 
-
-    const updateMiddle = () => {
-
-
-        let rect = scroller.getBoundingClientRect();
-        let middleX = (rect.left + rect.right) / 2;
+        const rect = scroller.getBoundingClientRect();
+        const middleX = (rect.left + rect.right) / 2;
 
         for (let index = 0; index < records.length; index++) {
 
@@ -45,15 +40,37 @@
 
             }
         }
-
-        if (records.length > end && records[records.length-1].left - rect.right < rect.width) {
-            start++;
-            end++;
-        } else if (0 < start && records[0]) {
-            
-        }
     }
 
+    const updateScroll = () =>  {
+
+        const rect = scroller.getBoundingClientRect();
+        const maxScroll = scroller.scrollWidth - rect.width;
+  
+        if (end < $history.length && maxScroll - scroller.scrollLeft < rect.width / 1.5 ) {
+            
+            end++;
+            if (records.length > 30) start +=5
+            scroller.scroll(Math.floor(scroller.scrollLeft - rect.width / 5), scroller.scrollTop)
+            $history = $history
+ 
+        } else if (start > 0 && scroller.scrollLeft < rect.width / 1.5) {
+            
+            start--;
+            if (records.length > 30) end -=5
+            scroller.scroll(Math.floor(rect.width / 3), scroller.scrollTop);
+            $history = $history
+        }
+
+        timeUpdater();
+    }
+
+    const scrollUpdater =  debounce(updateScroll, 300);
+
+    const onScroll = () => {
+        scrollUpdater();
+        timeUpdater();
+    }
     
 
 </script>
@@ -62,7 +79,7 @@
     <h4>{historytime.toLocaleString()}</h4>
 </div>
 
-<article on:scroll={updateMiddle} bind:this={scroller}>
+<article on:scroll={onScroll} bind:this={scroller}>
 
     {#each records as record }
         <HistoryRecord {record} />

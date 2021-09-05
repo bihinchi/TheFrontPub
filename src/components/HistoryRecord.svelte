@@ -1,14 +1,23 @@
 <script>
     import MiniPub from "./MiniPib.svelte"
     export let record;
+
+    const formatScore = (score) => {
+        if (score >= 0.1) return score.toFixed(3) + " Eth";
+        else if (score > 1e-4) return (score * 1e3).toFixed(2) + " mEth"
+        else if (score > 1e-7) return (score * 1e6).toFixed(2) + " µEth"
+        else if (score <= 0) return "0.00"
+        else return (score * 1e9).toFixed(2) + " gwei"
+    }
+
 </script>
 
 <section>
     <MiniPub pub={record.pub}/>
     <div class="between">
-        <span>{record.scoreStart.toFixed(2)} Eth</span>
+        <span>{formatScore(record.scoreStart)}</span>
         <span>-></span>
-        <span>{record.scoreEnd.toFixed(2)} Eth</span>
+        <span>{formatScore(record.scoreEnd)}</span>
     </div>
 
 </section> 
