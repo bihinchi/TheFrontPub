@@ -2,7 +2,6 @@
     import HistoryRecord from "./HistoryRecord.svelte";
 	import { history } from '../js/stores';
     import debounce from 'lodash/debounce'
-
     
     // history dom element
     let scroller;
@@ -50,7 +49,6 @@
 
             if (recordRect.left < middleX &&  middleX < recordRect.right) {
 
-                
                 const m = (record.endTime - record.startTime) 
                 / (recordRect.right - recordRect.left);
                 
@@ -59,7 +57,7 @@
                 historytime = new Date(middleX * m + b)
                 
                 record.length === MIN5 ? group++ : group--; 
-                
+
                 middle = $history.findIndex((el) => el === record);
             }
         }
@@ -99,9 +97,6 @@
             return indexCheck && elem.length !== MIN5;
         })
 
-        console.log("index:", index);
-
-
         if (index == -1) {
 
             // go to the edge of records
@@ -122,10 +117,14 @@
             // to the middle
 
             const diff = index - middle;
+
+            console.log(diff, start + diff, end+diff);
+
             start = Math.max(start + diff, 0);
-            end += diff;
+            end = start == 0 ? start + RECORDS_NUM : end + diff;
         }
 
+        group = 0;
         $history = $history
         onCenterUpdater();
     } 
@@ -150,7 +149,7 @@
         <HistoryRecord {record} />
     { /each }
 
-    { #if group > 1 }  
+    { #if group > 0 && records.length > RECORDS_NUM }  
         <span class="{ scrollRight ? 'right' : 'left' }" on:click={ skipGroup }>>></span> 
     { /if }
 

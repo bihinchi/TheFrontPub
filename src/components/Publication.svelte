@@ -1,11 +1,15 @@
 <script>
   export let pub;
+
+  $: empty = pub === undefined || Object.keys(pub).length === 0 
+
+  console.log("Publication:", pub);
+
 </script>
 
-
 <article>
-
-  { #if !pub || pub.link }
+  
+  { #if empty }
 
     <span>No publications ¯\_(ツ)_/¯</span>
 
@@ -27,7 +31,6 @@
     { :else }
       <img src={pub.link} alt="Current publication">
     { /if }
-
 
 
   { :else if pub.type == "video"}

@@ -12,7 +12,6 @@
   let link, stake, status, type = "link", 
   extra = { linkText : "", imageLink : "" };
 
-  let pub = {};
   $: pub = { link, type, extra }
 
 
@@ -47,6 +46,8 @@
     { type: "video", text: "Video"},
     { type: "iframe", text: "Iframe"},
   ]
+
+
 
 </script>
 

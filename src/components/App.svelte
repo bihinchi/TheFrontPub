@@ -10,55 +10,78 @@
     import { getModal } from './Modal.svelte';
 
 	import History from "./History.svelte"
+	//import Leaderboard from "./Leaderboard.svelte"
+
+	//import { onMount } from "svelte";
 
 	let current = {};
-
-	const dapp = new Dapp()
-
-	currentPub.subscribe(pub => current = pub);
-
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
 		document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
 	}
+
+
+	const dapp = new Dapp();
+	
+	/* onMount(() => {
+		dapp.init();
+	})  */
+
 	calculateWindow();
+
+	currentPub.subscribe(pub => current = pub);
+	
+
+	$: console.log("cur", $currentPub);
+
 	window.visualViewport.addEventListener("resize", calculateWindow);
-
-
-
 
 
 </script>
 
 <main>
 	<section>
-		<Publication pub={ current }/>
+		<Publication pub={$currentPub}/>
 		<NewPub publish={dapp.publishNew.bind(dapp)}/>
 	</section>
 </main>
 
 
 <a id="history_opener" on:click={()=>getModal("history").open()}>History</a>
+<!-- <a id="leaderboard_opener" on:click={()=>getModal("leaderboard").open()}>Leaderboard</a>
+ -->
 
 <Modal id="history">
 	<History/>
 </Modal>
 
+<!-- <Modal id="leaderboard">
+	<Leaderboard/>
+</Modal> -->
+
 <style>
 	:global(body) {
 		margin: 0;
 	}
-	
-	#history_opener {
+
+	a {
 		position: absolute;
-		top: 5vh;
 		left: 5vw;
 	}
 
-	#history_opener:hover  {
+	a:hover {
 		cursor: pointer;
 	}
+	
+	#history_opener {
+		top: 5vh;
+	}
+
+	#leaderboard_opener {
+		top: 8vh;
+	}
+
 
 	main {
 		margin: 0vw auto;

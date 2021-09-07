@@ -1,4 +1,22 @@
 <script>
+
+    const TIMES = [
+        {
+            name: "day",
+            duration: 3600*24,
+        }, {
+            name: "hour",
+            duration: 3600,
+        }, {
+            name: "minute",
+            duration: 60,
+        }, {
+            name: "second",
+            duration: 1,
+        },
+
+    ]
+
     import MiniPub from "./MiniPib.svelte"
     export let record;
 
@@ -9,6 +27,22 @@
         else if (score <= 0) return "0"
         else return (score * 1e9).toFixed(2) + " gwei"
     }
+
+    const formatDuration = (duration) => {
+        let str = "";
+
+        TIMES.forEach((time) => {
+            if (duration > time.duration) {
+                if (str.length > 0) str += ', ';
+                const count = Math.floor(duration / time.duration);
+                str += count + " " + (count === 1 ? time.name : (time.name + 's'));
+                duration %= time.duration
+            }
+        })
+
+        return str;
+    }
+
     const random = () => Math.floor((Math.random() * 3))
 </script>
 
@@ -19,7 +53,7 @@
         <span>-></span>
         <span>{formatScore(record.scoreEnd)}</span>
     </div>
-    <span>{record.length.toFixed(0)}</span>
+    <span>{formatDuration(record.length)}</span>
 </section> 
     
 <style>
