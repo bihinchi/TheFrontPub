@@ -2,10 +2,9 @@ import * as AbiFile from '../contracts/build/Publication.json'
 import { currentPub } from './stores.js';
 import { history } from './stores.js';
 
-
 import Web3 from "./web3";
 
-const MIN5 = 300
+const MIN5 = 900
 
 export class Dapp {
 
@@ -107,7 +106,7 @@ export class Dapp {
           const newScore = pub.publishedFor <= pub.maxPublishedFor 
                 ? pub.initialScore - scoreReduction(pub.publishedFor) : 0;
           
-          history.update(h => h = [...h, { 
+          /* history.update(h => h = [...h, { 
               pub: pub, 
               scoreStart: pub.score, 
               scoreEnd: newScore, 
@@ -115,7 +114,15 @@ export class Dapp {
               startTime : this.minShowTime * 1000,
               endTime : (this.minShowTime + timeDiff) * 1000
             }]
-          )
+          ) */
+
+          history.update(h => h = addToHistory(
+            h,
+            pub,
+            newScore,
+            this.minShowTime,
+            timeDiff
+          ))
           
           pub.score = newScore
 
@@ -131,18 +138,12 @@ export class Dapp {
           let sortedRecent = sortedKeys(pubs, this.minShowTime );
 
           if (sortedRecent.length == 0) { 
-          /* 
-            this.minShowTime += 50;
-            continue;
-          
-          */
-           this.minShowTime = Math.min(...Object.values(pubs).map(pub => pub.time));
-           sortedRecent = sortedKeys(pubs, this.minShowTime)
+            this.minShowTime = Math.min(...Object.values(pubs).map(pub => pub.time));
+            sortedRecent = sortedKeys(pubs, this.minShowTime)
           }
 
           let topScorePub = pubs[sortedRecent[0]]
           let calcTargetPub = pubs[keys[0]] === topScorePub ? pubs[keys[1]] : pubs[keys[0]];  
-
 
           // If topPub changed, reset its last published timer
           if (topScorePub !== this.topPub) this.topPub.lastShownTime = 0;
@@ -177,7 +178,7 @@ export class Dapp {
           }
 
           timeDiff = Math.min(timeDiff, topScorePub.maxPublishedFor - topScorePub.publishedFor, now - this.minShowTime)
-          
+
           this.minShowTime += timeDiff
           topScorePub.publishedFor += timeDiff;
           topScorePub.lastShownTime += timeDiff;
@@ -200,16 +201,13 @@ export class Dapp {
 
           }
 
-
-          history.update(h => h = [...h, { 
-              pub: topScorePub, 
-              scoreStart: topScorePub.score, 
-              scoreEnd: newScore, 
-              length: timeDiff,
-              startTime : this.minShowTime * 1000,
-              endTime : (this.minShowTime + timeDiff) * 1000
-            }]
-          )
+          history.update(h => h = addToHistory(
+            h,
+            topScorePub,
+            newScore,
+            this.minShowTime,
+            timeDiff
+          ))
 
 
           if (newScore <= 0) {
@@ -261,7 +259,7 @@ function scoreReduction(s) {
 function reverseScore(price) {
 
   // linear
-  if (price <= 0.05) return price / 0.05
+  if (price <= 0.05) return 3600*price / 0.05
 
   //squared
   const a = 0.00014038530109067304;
@@ -283,4 +281,28 @@ function sortedKeys(ads, minShowTime=Infinity) {
       else return (first.time > second.time) ? -1 : 0; 
     }   
   });
+}
+
+
+
+
+function addToHistory(history, pub, newScore, startTime, length) {
+
+  const last = history[history.length - 1];
+  
+  if (history.length > 0 && last.pub.link === pub.link) {
+    last.endTime = (startTime + length) * 1000;
+    last.scoreEnd = newScore;
+    last.length += length;
+  } else {
+    history.push({
+      pub: pub, 
+      scoreStart: pub.score, 
+      scoreEnd: newScore, 
+      length: length,
+      startTime : startTime * 1000,
+      endTime : (startTime + length) * 1000
+    })
+  }
+  return history;
 }

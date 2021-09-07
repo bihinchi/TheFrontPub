@@ -34,13 +34,9 @@
       </video>
     
     { :else if pub.type == "iframe"}
-  
-      <iframe title="Current publication" src={pub.link}
-        referrerpolicy="no-referrer"
-        allowpaymentrequest
-        allowfullscreen
-      >
-      </iframe>
+      
+      <span>Iframe from</span>
+      <span>{pub.link}</span>
   
     { /if }
   
@@ -53,23 +49,24 @@
 
     div {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 15vh;  
+      min-height: 12vh;  
       max-width: 36vw;
     }
   
     div * {
-        max-width: 35vw;
-        max-height: 29vh;  
+        max-width: 27vw;
+        max-height: 28vh;  
     }
 
-    div :not(a) {
+    div :not(a) :not(span) :not(p) {
         min-width: 28vw;
         min-height: 27vh;
     }
 
-    #plainLink {
+    #plainLink, span {
       overflow: auto;
       word-break:break-all;
       text-align: center;
@@ -78,19 +75,16 @@
   
     img {
       border-radius: 1%;
-      max-height: 76vh;
     }
   
     video {
       object-fit: cover;
-      max-height: 100%;
     }
   
-    iframe {
-      border: 0.1px solid #7e7d7d;
+    span {
+      display: block;
     }
-  
-    
+
   
   </style>
   
