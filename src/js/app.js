@@ -1,6 +1,5 @@
 import * as AbiFile from '../contracts/build/Publication.json'
-import { currentPub } from './stores.js';
-import { history } from './stores.js';
+import { currentPub, history, leaderboard } from './stores.js';
 
 import Web3 from "./web3";
 
@@ -40,7 +39,7 @@ export class Dapp {
   }
 
   async initContract() {
-    this.Publication = new web3.eth.Contract(AbiFile.abi, "0x9e4D6398b37A82BB78bf753793e189044379d8Fe");    
+    this.Publication = new web3.eth.Contract(AbiFile.abi, "0xf38eead662fA75b460D3aA7cCa5376CA01544d82");    
     this.Publication.setProvider(this.web3Provider);    
   }
 
@@ -50,6 +49,8 @@ export class Dapp {
       toBlock: 'latest'
     })
     for (const event of events) {
+
+      console.log("event:", event);
 
       const score = parseFloat(web3.utils.fromWei(event.returnValues._score));
 
@@ -71,9 +72,10 @@ export class Dapp {
   initScores () {
 
     const pubs = this.publications;
-    const now = Date.now() / 1000;
+
+    if (Object.keys(pubs).length === 0) return;
     
-    if (pubs.length === 0) return;
+    const now = Date.now() / 1000;
 
     if (!this.topPub) this.topPub = Object.values(pubs).find(elem => elem.lastShownTime === 0);
   
@@ -224,6 +226,7 @@ export class Dapp {
     
     }
 
+    console.log("code in app");
     currentPub.set(this.topPub);
 
 

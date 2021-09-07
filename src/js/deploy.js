@@ -9,7 +9,7 @@ const params = {
     language: "Solidity",
     sources: {
         "contract": {
-            content: fs.readFileSync("../contracts/Publication.sol", 'utf-8')
+            content: fs.readFileSync("src/contracts/Publication.sol", 'utf-8')
         }
     },
     settings: {
@@ -29,7 +29,7 @@ const contract = compileCode.contracts.contract.Publication
 const abi = contract.abi;
 const byteCode = contract.evm.bytecode.object;
 
-fs.writeFileSync("../contracts/build/Publication.json", JSON.stringify(contract));
+fs.writeFileSync("src/contracts/build/Publication.json", JSON.stringify(contract));
 
 
 

@@ -24,14 +24,16 @@ contract Publication {
     event newPublished(string _link,
                         string _type,
                         string _extra,
-                        uint _score, uint _time);
+                        uint _score, 
+                        uint _time,
+                        address _sender);
 
 
     function publish(string calldata _link, 
                     string calldata _type,
                     string calldata _extra) external payable {
        
-       emit newPublished(_link, _type, _extra, msg.value, block.timestamp);
+       emit newPublished(_link, _type, _extra, msg.value, block.timestamp, msg.sender);
     }
 
 
