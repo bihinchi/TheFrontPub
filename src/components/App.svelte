@@ -10,11 +10,10 @@
     import { getModal } from './Modal.svelte';
 
 	import History from "./History.svelte"
-	//import Leaderboard from "./Leaderboard.svelte"
+	import Leaderboard from "./Leaderboard.svelte"
 
 	//import { onMount } from "svelte";
 
-	let current = {};
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
@@ -30,13 +29,7 @@
 
 	calculateWindow();
 
-	currentPub.subscribe(pub => current = pub);
-	
-
-	$: console.log("cur", $currentPub);
-
 	window.visualViewport.addEventListener("resize", calculateWindow);
-
 
 </script>
 
@@ -48,40 +41,46 @@
 </main>
 
 
-<a id="history_opener" on:click={()=>getModal("history").open()}>History</a>
-<!-- <a id="leaderboard_opener" on:click={()=>getModal("leaderboard").open()}>Leaderboard</a>
- -->
+<nav>
+	<span on:click={()=>getModal("history").open()}>History</span>
+	<span on:click={()=>getModal("leaderboard").open()}>Leaderboard</span>
+	<span on:click={()=>getModal("info").open()}>Info</span>
+</nav>
+
 
 <Modal id="history">
 	<History/>
 </Modal>
 
-<!-- <Modal id="leaderboard">
+<Modal id="leaderboard">
 	<Leaderboard/>
-</Modal> -->
+</Modal>
 
 <style>
 	:global(body) {
 		margin: 0;
 	}
 
-	a {
+	nav {
 		position: absolute;
-		left: 5vw;
+		left: 2vw;
+		bottom: 2vh;
+		color: #8182a4;
 	}
 
-	a:hover {
+	span {
+		padding: 0.2vw;
+	}
+
+	span:hover {
 		cursor: pointer;
+		border-bottom: 0.3vh solid darkblue;
+	}
+
+	span:not(span:last-child) {
+		margin-right: 0.2vw;
 	}
 	
-	#history_opener {
-		top: 5vh;
-	}
-
-	#leaderboard_opener {
-		top: 8vh;
-	}
-
 
 	main {
 		margin: 0vw auto;

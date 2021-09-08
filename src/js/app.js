@@ -1,5 +1,6 @@
 import * as AbiFile from '../contracts/build/Publication.json'
-import { currentPub, history, leaderboard } from './stores.js';
+import { currentPub, history } from './stores.js';
+import { Leaderboard } from './leaderboard';
 
 import Web3 from "./web3";
 
@@ -50,8 +51,6 @@ export class Dapp {
     })
     for (const event of events) {
 
-      console.log("event:", event);
-
       const score = parseFloat(web3.utils.fromWei(event.returnValues._score));
 
       if (!(event.returnValues._link in this.publications)) this.publications[event.returnValues._link] = {
@@ -64,7 +63,11 @@ export class Dapp {
           score : score,
           lastShownTime : 0,
           publishedFor: 0,
-        }
+      }
+
+      Leaderboard.processRecord(event.returnValues._sender, score, 
+                  event.returnValues._link, event.returnValues._type) 
+
     }
 
   }
@@ -108,15 +111,6 @@ export class Dapp {
           const newScore = pub.publishedFor <= pub.maxPublishedFor 
                 ? pub.initialScore - scoreReduction(pub.publishedFor) : 0;
           
-          /* history.update(h => h = [...h, { 
-              pub: pub, 
-              scoreStart: pub.score, 
-              scoreEnd: newScore, 
-              length: timeDiff,
-              startTime : this.minShowTime * 1000,
-              endTime : (this.minShowTime + timeDiff) * 1000
-            }]
-          ) */
 
           history.update(h => h = addToHistory(
             h,
@@ -226,10 +220,9 @@ export class Dapp {
     
     }
 
-    console.log("code in app");
     currentPub.set(this.topPub);
 
-
+    setTimeout(this.initScores.bind(this), this.minShowTime);
     
   }
 
