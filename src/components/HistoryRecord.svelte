@@ -50,7 +50,7 @@
     <MiniPub pub={record.pub}/>
     <div class="between">
         <span>{formatScore(record.scoreStart)}</span>
-        <span>-></span>
+        <span>➔</span>
         <span>{formatScore(record.scoreEnd)}</span>
     </div>
     <span>{formatDuration(record.length)}</span>
@@ -62,6 +62,7 @@
         font-size: 1.7vw;
         font-style: italic;
         color: #7b7b7b;
+        margin-bottom: 0.7vh;
     }
 
     section {
@@ -79,6 +80,7 @@
         justify-content: space-between;
         max-width: 32vw;
         min-width: 23vw;
+        margin-top: 1vh;
     }
 
     .flex-start { align-self: flex-start; }
