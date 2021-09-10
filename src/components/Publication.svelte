@@ -60,7 +60,7 @@
 <style>
 
   article {
-    height: 72%;
+    height: 70%;
     width: auto;
     display: flex;
     justify-content: center;

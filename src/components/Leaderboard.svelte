@@ -78,13 +78,17 @@
     li {
         display: flex;
         flex-direction: column;
-        
-        margin-bottom: 1.2vw;
-        padding: 1.1vh 0vw;
-        border-bottom: 0.3vh solid darkblue;
+        padding: 1.3vh 0vw;
+    
+    }
+    
+    li:not(li:last-child) {
+        border-bottom: 0.1vh solid #9696b9;
     }
 
     ol {
-        padding-left: 0;
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 </style>

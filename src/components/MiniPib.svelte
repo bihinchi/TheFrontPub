@@ -17,10 +17,10 @@
   
       { #if pub.extra && pub.extra.imageLink }
         <a href={pub.extra.imageLink} target="_blank" noopener noreferrer>
-          <img src={pub.link} alt="Current publication">
+          <img src={pub.link} alt="history publication">
         </a>  
       { :else }
-        <img src={pub.link} alt="Current publication">
+        <img src={pub.link} alt="history publication">
       { /if }
   
   
