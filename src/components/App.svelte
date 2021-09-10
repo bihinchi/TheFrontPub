@@ -11,6 +11,7 @@
 
 	import History from "./History.svelte"
 	import Leaderboard from "./Leaderboard.svelte"
+	import Info from "./Info.svelte"
 
 	//import { onMount } from "svelte";
 
@@ -55,6 +56,11 @@
 <Modal id="leaderboard">
 	<Leaderboard/>
 </Modal>
+
+<Modal id="info">
+	<Info/>
+</Modal>
+
 
 <style>
 	:global(body) {
