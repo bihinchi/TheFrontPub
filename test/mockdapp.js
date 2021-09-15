@@ -58,8 +58,9 @@ class MockDapp {
 
             const keys = Object.keys(pubs);
             
-            this.minShowTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
-
+            this.minShowTime = Math.max(this.minShowTime, 
+                        Math.min(...Object.values(pubs).map(pub => pub.time)))
+            
             if (keys.length == 1) {
 
                 const pub = pubs[keys[0]];

@@ -13,7 +13,8 @@
 	import Leaderboard from "./Leaderboard.svelte"
 	import Info from "./Info.svelte"
 
-	//import { onMount } from "svelte";
+	import { onMount } from "svelte";
+
 
 	
 	const calculateWindow = () => {
@@ -24,9 +25,10 @@
 
 	const dapp = new Dapp();
 	
-	/* onMount(() => {
-		dapp.init();
-	})  */
+	onMount(() => {
+		dapp.init()
+		.catch(e => console.log(e));
+	})
 
 	calculateWindow();
 
@@ -63,15 +65,25 @@
 
 
 <style>
+
 	:global(body) {
 		margin: 0;
+	}
+
+	:global(.center) {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	nav {
 		position: absolute;
 		left: 2vw;
 		bottom: 2vh;
-		color: #8182a4;
+		color: #5b5b63;
+		min-width: 19vw;
+		max-width: 25vw;
+		z-index: 2;
 	}
 
 	span {

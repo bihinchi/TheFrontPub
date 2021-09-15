@@ -9,8 +9,8 @@
 
 </script>
 
-<article>
-    <EtherButton text="NEW PUBLICATION" onClick={()=>getModal("pub").open()}/>
+<article class="center">
+    <EtherButton text="NEW PUBLICATION" onClick={()=>{getModal("pub").open()}}/>
 </article>
 
 <Modal id="pub">
@@ -19,12 +19,9 @@
 
 
 <style>
+    
     article {
-        height: 10%;
-        display:flex;
-        justify-content:center;
-        align-items: center;
-        width: auto;
+        flex-grow: 1;
     }
 
     

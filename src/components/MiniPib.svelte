@@ -3,7 +3,7 @@
   </script>
   
   
-  <div>
+  <div class="center">
     { #if pub.type == "link" }
       <a id="plainLink" href={pub.link} target="_blank" noopener noreferrer >
         { #if pub.extra && pub.extra.linkText }
@@ -24,18 +24,14 @@
       { /if }
   
   
-  
     { :else if pub.type == "video"}
-  
-      <video controls autoplay 
-        src={pub.link}
-        poster="https://cdn.drawception.com/images/panels/2012/3-30/9MS3sqCOzD-2.png">
-        <track kind="captions">
-      </video>
+
+      <span>Video of</span>
+      <span>{pub.link}</span>
     
     { :else if pub.type == "iframe"}
       
-      <span>Iframe from</span>
+      <span>Iframe of</span>
       <span>{pub.link}</span>
   
     { /if }
@@ -48,10 +44,7 @@
   <style>
 
     div {
-      display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
       min-height: 12vh;  
       max-width: 36vw;
     }

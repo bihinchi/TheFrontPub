@@ -314,10 +314,12 @@ const initScoreTests = [
     }
 ]
 
+const scoreCalcTests = []
 
 
 
 module.exports = {
     initScoreTests,
-    newEventTests
+    newEventTests,
+    scoreCalcTests
 }

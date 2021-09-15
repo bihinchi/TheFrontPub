@@ -14,6 +14,13 @@
         </p>
     </section>
 
+    <section>
+        <h5>Tips:</h5>
+        <p>
+            Update your browser to the latest verison. Hover on the publication and check its link before clicking.
+        </p>
+    </section>
+
 </article>
 
 

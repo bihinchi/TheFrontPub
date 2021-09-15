@@ -33,6 +33,7 @@
   		getModal("status").open()
     })
     .catch(error => {
+      console.log("error", error);
       status = error
   		getModal("status").open()
     });
@@ -52,8 +53,8 @@
 </script>
 
 
-<form id="form" action="#" on:submit|preventDefault>
-  <ul>
+<form id="form" action="#" on:submit|preventDefault class="center">
+  <ul class="center">
 
     <li id="typeLi">
       <label for="pubType">Type:</label>
@@ -107,11 +108,13 @@
 </Modal>
 
 
+{ #if pub && pub.link}
 <Modal id="preview">
-  <div id="preview-content">
+  <div id="preview-content" class="center">
     <Publication { pub } />
   </div>
 </Modal>
+{ /if }
 
 
 
@@ -121,9 +124,6 @@
   #preview-content {
     min-height: 80vh;
     min-width: 80vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
 
@@ -199,18 +199,12 @@
 
 
   form {
-    display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 0 2.1vw
   }
 
   ul {
-    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
     list-style-type: none;
     padding-left: 0;
     margin: 1vh auto;

@@ -46,7 +46,7 @@
     const random = () => Math.floor((Math.random() * 3))
 </script>
 
-<section class="{ random() === 0 ? 'flex-start' : ( random() == 2 ? 'flex-end'  : '' ) }">
+<section class="{ random() === 0 ? 'flex-start' : ( random() == 2 ? 'flex-end'  : '' ) } center">
     <MiniPub pub={record.pub}/>
     <div class="between">
         <span>{formatScore(record.scoreStart)}</span>
@@ -66,10 +66,7 @@
     }
 
     section {
-      display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
       min-width: 28vw;
       min-height: 30vh;
       margin: 0 2vw;

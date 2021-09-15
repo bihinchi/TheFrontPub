@@ -56,9 +56,15 @@
                 
                 historytime = new Date(middleX * m + b)
                 
-                record.length === MIN5 ? group++ : group--; 
+                const newMiddle = $history.findIndex((el) => el === record);
 
-                middle = $history.findIndex((el) => el === record);
+                if (newMiddle != middle) {
+                    group = record.length === MIN5 ? group+1 : 0; 
+                }
+
+                middle = newMiddle;
+
+
             }
         }
     }
@@ -92,10 +98,12 @@
 
     const skipGroup = () => {
 
-        const index = $history.findIndex( (elem, index) => {
-            const indexCheck = scrollRight ? index >= middle : index < middle;
-            return indexCheck && elem.length !== MIN5;
-        })
+        const index = scrollRight 
+            ? 
+              $history.findIndex((elem,index) => index >= middle && elem.length !== MIN5)
+            :
+              $history.lastIndexOf((elem,index) => index >= ($history.length - middle) && elem.length !== MIN5)
+
 
         if (index == -1) {
 
@@ -103,11 +111,15 @@
             // if competetion never ended
 
             if (scrollRight) {
+
                 end = $history.length;
                 start = Math.max(end - RECORDS_NUM, 0)
+
             } else {
+
                 start = 0;
                 end = start + RECORDS_NUM;
+                
             }
 
 
@@ -117,8 +129,6 @@
             // to the middle
 
             const diff = index - middle;
-
-            console.log(diff, start + diff, end+diff);
 
             start = Math.max(start + diff, 0);
             end = start == 0 ? start + RECORDS_NUM : end + diff;
@@ -135,12 +145,32 @@
         scrollUpdater();
         onCenterUpdater();
     }
+
+    const onStartClick = () => {
+        start = 0;
+        end = start + RECORDS_NUM;
+        group = 0;
+        $history = $history
+        scroller.scrollLeft = 0;
+        onCenterUpdater();
+    }
+
+    const onEndClick = () => {
+        end = $history.length;
+        start = Math.max(end - RECORDS_NUM, 0)
+        group = 0;
+        $history = $history;
+        scroller.scrollLeft = scroller.scrollWidth;
+        onCenterUpdater();
+    }
     
 
 </script>
 
 <div>
-    <h4>{historytime.toLocaleString()}</h4>
+    <span on:click={onStartClick}>Start</span>
+    <span>{historytime.toLocaleString()}</span>
+    <span on:click={onEndClick}>End</span>
 </div>
 
 <article on:scroll={onScroll} bind:this={scroller}>
@@ -149,7 +179,7 @@
         <HistoryRecord {record} />
     { /each }
 
-    { #if group > 0 && records.length > RECORDS_NUM }  
+    { #if group > 1 && $history.length >= RECORDS_NUM }  
         <span class="{ scrollRight ? 'right' : 'left' }" on:click={ skipGroup }>>></span> 
     { /if }
 
@@ -157,17 +187,29 @@
 
 <style>
 
-    span {
+    div > span {
+        font-style: italic;
+    }
+
+    article > span {
         position: absolute;
         top: 50%;
+        padding: 0.5vw;
+        border-radius: 0.5vw;
+        border: 0.01vw solid black;
+        opacity: 0.6;
+    }
+
+    article > span:hover {
+        opacity: 1;
     }
 
     .right {
-        right: 5%;
+        right: 4%;
     }
 
     .left {
-        left: 5%;
+        left: 4%;
         transform: scale(-1, 1);
     }
 
@@ -177,8 +219,9 @@
 
     div {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         font-size: 1.2vw;
+        margin-bottom: 1vh;
     }
 
     article {

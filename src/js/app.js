@@ -6,6 +6,17 @@ import Web3 from "./web3";
 
 const MIN5 = 900
 
+const SMALL_DIFF = 0.000001;
+
+
+const networks = {
+  1 : "",
+  3 : "0x657f9AD6ec2D3F147F37d56700a4b5ef3468a08c",
+  4 : "",
+  1337 : "0xf38eead662fA75b460D3aA7cCa5376CA01544d82"
+}
+
+
 export class Dapp {
 
   constructor() {
@@ -15,61 +26,123 @@ export class Dapp {
     this.topPub = {};
     this.minShowTime = 0;
     this.firstTime = true;
-    this.init();
+    this.networkId = 1;
   }
 
   init() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => 
       this.initWeb3()
-      .then(() => this.initContract())
-      .then(() => this.getEvents())
-      .then(() => resolve(this.initScores()))
-      .catch(e => reject(e));
-    })
+      .then(() => this.initPublications())
+      .then(() => resolve())
+      .catch(e => reject(e))
+    )
   }
 
   async initWeb3() {
-    if (typeof web3 == 'undefined') 
-      this.web3Provider = web3.currentProvider;
-    else 
+
+    if (typeof web3 == 'undefined' && typeof ethereum !== 'undefined') {
+      this.web3Provider = ethereum;
+      web3 = new Web3(this.web3Provider);
+      ethereum.send('eth_requestAccounts')
+    }
+    else {
       this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      //this.web3Provider = new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/402dfb58b389421e9d9ce1f4461ca598');
+      window.web3 = new Web3(this.web3Provider);
+    }
 
     web3 = new Web3(this.web3Provider);
-    const accounts = await web3.eth.getAccounts();    
+
+    const accounts = await web3.eth.getAccounts(); 
+    this.networkId = await web3.eth.getChainId()
+
+
+    const updateNetwork = (netId) => {
+
+      if (this.networkId !== netId) {
+        this.networkId = netId
+        this.initPublications();
+      }
+    }
+
+    setInterval(() => { 
+      web3.eth.getChainId()
+      .then(updateNetwork)
+      .catch(console.error)
+    }, 1800);
+
     this.account = accounts[0];
+
+  };
+
+
+  async initPublications() {
+    return this.initContract()
+    .then(() => this.getEvents())
+    .then(() => this.initScores())
   }
 
+
   async initContract() {
-    this.Publication = new web3.eth.Contract(AbiFile.abi, "0xf38eead662fA75b460D3aA7cCa5376CA01544d82");    
+
+    if (!networks[this.networkId]) {
+
+      const text = "The contract address couldn\'t be found on the current network"
+
+      currentPub.set({
+        link: "https://ethereum.org/en/developers/docs/networks/",
+        type: "link",
+        extra: { linkText : text }
+      })
+
+      history.set([])
+
+
+      throw new Error(text);
+    } 
+
+    this.Publication = new web3.eth.Contract(AbiFile.abi, networks[this.networkId]);    
+    //this.Publication = new web3.eth.Contract(AbiFile.abi, "0x657f9AD6ec2D3F147F37d56700a4b5ef3468a08c");    
+    
     this.Publication.setProvider(this.web3Provider);    
   }
 
+  processEvent(event) {
+
+    const score = parseFloat(web3.utils.fromWei(event.returnValues._score));
+
+    if (!(event.returnValues._link in this.publications)) this.publications[event.returnValues._link] = {
+        link : event.returnValues._link,
+        type : event.returnValues._type,
+        extra: event.returnValues._extra.length > 30 ? JSON.parse(event.returnValues._extra) : {},
+        time : web3.utils.toNumber(event.returnValues._time),
+        maxPublishedFor: reverseScore(score),
+        initialScore : score,
+        score : score,
+        lastShownTime : 0,
+        publishedFor: 0,
+    }
+
+    Leaderboard.processRecord(event.returnValues._sender, score, 
+                event.returnValues._link, event.returnValues._type) 
+  }
+
   async getEvents() {
+
+    // get all passed
     const events = await this.Publication.getPastEvents('newPublished', {
       fromBlock: 0,
       toBlock: 'latest'
     })
-    for (const event of events) {
+    events.forEach(e => this.processEvent(e))
 
-      const score = parseFloat(web3.utils.fromWei(event.returnValues._score));
-
-      if (!(event.returnValues._link in this.publications)) this.publications[event.returnValues._link] = {
-          link : event.returnValues._link,
-          type : event.returnValues._type,
-          extra: event.returnValues._extra.length > 30 ? JSON.parse(event.returnValues._extra) : {},
-          time : web3.utils.toNumber(event.returnValues._time),
-          maxPublishedFor: reverseScore(score),
-          initialScore : score,
-          score : score,
-          lastShownTime : 0,
-          publishedFor: 0,
-      }
-
-      Leaderboard.processRecord(event.returnValues._sender, score, 
-                  event.returnValues._link, event.returnValues._type) 
-
-    }
-
+    // listen for new
+    this.Publication.events.newPublished({
+      fromBlock: 'latest',
+    }, e => {
+      this.processEvent(e);
+      this.initScores();
+    })
   }
 
   initScores () {
@@ -89,7 +162,10 @@ export class Dapp {
 
       const keys = Object.keys(pubs);
       
-      this.minShowTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
+      this.minShowTime = Math.max(this.minShowTime, 
+        Math.min(...Object.values(pubs).map(pub => pub.time)))
+      
+      //  this.minShowTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
 
       if (keys.length == 1) {
 
@@ -108,7 +184,7 @@ export class Dapp {
           pub.lastShownTime += timeDiff;
           pub.publishedFor += timeDiff;
 
-          const newScore = pub.publishedFor <= pub.maxPublishedFor 
+          let newScore = pub.publishedFor < pub.maxPublishedFor 
                 ? pub.initialScore - scoreReduction(pub.publishedFor) : 0;
           
 
@@ -193,7 +269,7 @@ export class Dapp {
             // in case of small score diff in results, make sure,
             // that the old pub value is smaller to avoid
             // small score diff calculation the next round
-            if (Math.abs(newScore - calcTargetPub.score) < 0.000001) newScore = calcTargetPub.score - 0.000001;
+            if (Math.abs(newScore - calcTargetPub.score) < SMALL_DIFF) newScore = calcTargetPub.score - SMALL_DIFF;
 
           }
 

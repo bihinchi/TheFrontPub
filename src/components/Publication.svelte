@@ -3,11 +3,9 @@
 
   $: empty = pub === undefined || Object.keys(pub).length === 0 
 
-  console.log("Publication:", pub);
-
 </script>
 
-<article>
+<article class="center">
   
   { #if empty }
 
@@ -60,16 +58,13 @@
 <style>
 
   article {
-    height: 70%;
     width: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-grow: 3;
   }
 
   #plainLink, span {
     overflow: auto;
-    word-break:break-all;
+    word-break:break-word;
     font-size: 3.5vw;
     max-width: 90%;
     max-height: 90%;

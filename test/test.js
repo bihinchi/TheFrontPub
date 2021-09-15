@@ -7,7 +7,7 @@ const mockData = require("./test_data")
 describe('Init scores', function() {
 
     
-    describe("should initialise scores of events and show right top", function() {
+    describe("should show right top publication", function() {
         
         for (const initScoreTest of mockData.initScoreTests) {
 
@@ -23,6 +23,24 @@ describe('Init scores', function() {
 
         }
     });
+
+    describe("should show right scores", function() {
+        
+        for (const scoreCalcTest of mockData.scoreCalcTests) {
+
+            it(scoreCalcTest.title, function() {
+
+                const dapp = scoreCalcTest.now 
+                            ? new MockDapp(scoreCalcTest.events, scoreCalcTest.now)
+                            : new MockDapp(scoreCalcTest.events)
+                
+        
+                assert.equal(dapp.topPub.score, scoreCalcTest.score)
+            })
+
+        }
+    });
+
 
 
     describe("changes in what to show after some time", function() {
