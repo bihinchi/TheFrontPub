@@ -13,33 +13,54 @@
 	import Leaderboard from "./Leaderboard.svelte"
 	import Info from "./Info.svelte"
 
-	import { onMount } from "svelte";
+	import ConnectButton from "./ConnectButton.svelte";
 
-
+	//import { onMount } from "svelte";
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
 		document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`);
 	}
 
-
 	const dapp = new Dapp();
-	
-	onMount(() => {
-		dapp.init()
-		.catch(e => console.log(e));
-	})
+
+	let connected = dapp.connected, error = false;
 
 	calculateWindow();
-
 	window.visualViewport.addEventListener("resize", calculateWindow);
 
 </script>
 
 <main>
 	<section>
+
+		{ #if connected }
 		<Publication pub={$currentPub}/>
-		<NewPub publish={dapp.publishNew.bind(dapp)}/>
+
+		{ #if !error }
+			<NewPub publish={dapp.publishNew.bind(dapp)}/>
+		{ /if }
+
+		{ :else }
+
+		<div>
+			<ConnectButton onClick={() =>
+				dapp.init()
+				.then(() => {
+					connected = true;
+					error = false;
+				})
+				.catch(e => error = e.message)
+			}/>
+	
+			{ #if error } <p class="center">{error}</p> { /if } 
+
+		</div>
+
+		{ /if }
+
+
+
 	</section>
 </main>
 
@@ -62,6 +83,7 @@
 <Modal id="info">
 	<Info/>
 </Modal>
+
 
 
 <style>
@@ -110,6 +132,10 @@
 		flex-direction: column;
 		justify-content: space-evenly;
 		align-items: center;
+	}
+
+	p {
+		color: #a61717;
 	}
 
 </style>
