@@ -47,13 +47,13 @@
         border-radius: 0.5vw;
         box-shadow: 0.01vw 0.01vh 0.2vw 0.01vw darkblue;
         padding: 0.5vh 1.9vw;
-        margin-bottom: 2vh;
+        margin-bottom: 2.5vh;
 
     }
 
     h4 {
         color: #000061;
-        margin-bottom: 0;
+        margin-bottom: 0.5vh;
         font-family: "Nunito", sans-serif;
     }
 
@@ -83,7 +83,7 @@
     }
     
     li:not(li:last-child) {
-        border-bottom: 0.1vh solid #9696b9;
+        border-bottom: 0.3vh solid #9696b9;
     }
 
     ol {

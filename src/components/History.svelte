@@ -102,7 +102,7 @@
             ? 
               $history.findIndex((elem,index) => index >= middle && elem.length !== MIN5)
             :
-              $history.lastIndexOf((elem,index) => index >= ($history.length - middle) && elem.length !== MIN5)
+              $history.slice(0, middle).lastIndexOf(elem => elem.length !== MIN5)
 
 
         if (index == -1) {
@@ -167,21 +167,29 @@
 
 </script>
 
+
+{ #if records.length > 3}
 <div>
     <span on:click={onStartClick}>Start</span>
     <span>{historytime.toLocaleString()}</span>
     <span on:click={onEndClick}>End</span>
 </div>
+{ /if }
 
 <article on:scroll={onScroll} bind:this={scroller}>
 
-    {#each records as record }
-        <HistoryRecord {record} />
-    { /each }
+    { #if records.length > 0}
+        {#each records as record }
+            <HistoryRecord {record} />
+        { /each }
 
-    { #if group > 1 && $history.length >= RECORDS_NUM }  
-        <span class="{ scrollRight ? 'right' : 'left' }" on:click={ skipGroup }>>></span> 
+        { #if group > 1 && $history.length >= RECORDS_NUM }  
+            <span class="{ scrollRight ? 'right' : 'left' }" on:click={ skipGroup }>>></span> 
+        { /if }
+    { :else }
+        <p class="center">No records</p>    
     { /if }
+
 
 </article>
 
@@ -231,7 +239,12 @@
         justify-content: space-between;
         max-width: 91vw;
         min-height: 60vh;
+        min-width: 24vw;
         font-size: 3.0vw;
+    }
+
+    p {
+        width: 100%;
     }
 
     

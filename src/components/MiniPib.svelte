@@ -5,7 +5,7 @@
   
   <div class="center">
     { #if pub.type == "link" }
-      <a id="plainLink" href={pub.link} target="_blank" noopener noreferrer >
+      <a class="plainLink" href={pub.link} target="_blank" rel="noopener noreferrer nofollow" >
         { #if pub.extra && pub.extra.linkText }
           { pub.extra.linkText }
         { :else }
@@ -16,7 +16,7 @@
     { :else if pub.type == "image"}
   
       { #if pub.extra && pub.extra.imageLink }
-        <a href={pub.extra.imageLink} target="_blank" noopener noreferrer>
+        <a href={pub.extra.imageLink} target="_blank" rel="noopener noreferrer nofollow">
           <img src={pub.link} alt="history publication">
         </a>  
       { :else }
@@ -59,7 +59,7 @@
         min-height: 27vh;
     }
 
-    #plainLink, span {
+    .plainLink, span {
       overflow: auto;
       word-break:break-all;
       text-align: center;
@@ -68,10 +68,8 @@
   
     img {
       border-radius: 1%;
-    }
-  
-    video {
-      object-fit: cover;
+      max-width: 27vw;
+      max-height: 28vh;
     }
   
     span {

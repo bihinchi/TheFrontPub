@@ -36,6 +36,4 @@ contract Publication {
        emit newPublished(_link, _type, _extra, msg.value, block.timestamp, msg.sender);
     }
 
-
-
 }

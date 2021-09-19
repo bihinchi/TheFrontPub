@@ -2,6 +2,7 @@ import * as AbiFile from '../contracts/build/Publication.json'
 import { currentPub, history } from './stores.js';
 import { Leaderboard } from './leaderboard';
 
+
 import Web3 from "./web3";
 
 const MIN5 = 900
@@ -10,11 +11,11 @@ const SMALL_DIFF = 0.000001;
 
 
 const networks = {
-  1 : "",
+  1 : "0x2db6D9a1d7D1304E380CFBbeE0896E46F2573625",
   3 : "0x657f9AD6ec2D3F147F37d56700a4b5ef3468a08c",
-  4 : "",
-  1337 : "0xf38eead662fA75b460D3aA7cCa5376CA01544d82"
+  4 : "0x657f9ad6ec2d3f147f37d56700a4b5ef3468a08c",
 }
+
 
 
 export class Dapp {
@@ -22,12 +23,21 @@ export class Dapp {
   constructor() {
     this.web3Provider = null;
     this.account = '0x0';
+    this.networkId = 1;
+    this.reset();
+  }
+
+
+  reset() {
     this.publications = {};
     this.topPub = {};
     this.minShowTime = 0;
     this.firstTime = true;
-    this.networkId = 1;
+    this.connected = false;//(typeof ethereum !== 'undefined') && ethereum.isConnected();
+    currentPub.set({});
+    history.set([]);
   }
+
 
   init() {
     return new Promise((resolve, reject) => 
@@ -38,41 +48,63 @@ export class Dapp {
     )
   }
 
+
   async initWeb3() {
 
-    if (typeof web3 == 'undefined' && typeof ethereum !== 'undefined') {
-      this.web3Provider = ethereum;
-      web3 = new Web3(this.web3Provider);
-      ethereum.send('eth_requestAccounts')
-    }
-    else {
-      this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-      //this.web3Provider = new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/402dfb58b389421e9d9ce1f4461ca598');
-      window.web3 = new Web3(this.web3Provider);
-    }
-
-    web3 = new Web3(this.web3Provider);
-
-    const accounts = await web3.eth.getAccounts(); 
-    this.networkId = await web3.eth.getChainId()
-
-
     const updateNetwork = (netId) => {
-
       if (this.networkId !== netId) {
-        this.networkId = netId
+        this.networkId = netId;
+        this.reset();
         this.initPublications();
       }
     }
 
-    setInterval(() => { 
-      web3.eth.getChainId()
-      .then(updateNetwork)
-      .catch(console.error)
-    }, 1800);
+    if (typeof ethereum !== 'undefined') {
+
+
+      this.web3Provider = ethereum;
+      web3 = new Web3(this.web3Provider);
+      await ethereum.request({ method: 'eth_requestAccounts' })
+
+      ethereum.on('disconnect', e =>this.connected = false );
+      ethereum.on('chainChanged', chainId => updateNetwork(chainId) )
+
+    } else {
+
+      this.web3Provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/402dfb58b389421e9d9ce1f4461ca598');
+      window.web3 = new Web3(this.web3Provider);
+
+      if (!(await web3.eth.net.isListening())) {
+
+        const text = "Couldn\'t connect to an Ethereum node. This dapp supports injecting by MetaMask and a gateway provided by Infura."
+
+        currentPub.set({
+          link: "https://ethereum.org/en/developers/docs/nodes-and-clients/",
+          type: "link",
+          extra: { linkText : text }
+        })
+
+        throw new Error(text);
+      
+      }
+
+      setInterval(() => { 
+        web3.eth.getChainId()
+        .then((id) => updateNetwork(id))
+        .catch(console.error)
+      }, 1800);
+    }
+
+    const accounts = await web3.eth.getAccounts(); 
+    this.networkId = await web3.eth.getChainId()
+
+    
+
+    
 
     this.account = accounts[0];
-
+    this.connected = true;
+  
   };
 
 
@@ -95,15 +127,10 @@ export class Dapp {
         extra: { linkText : text }
       })
 
-      history.set([])
-
-
       throw new Error(text);
-    } 
+    }
 
     this.Publication = new web3.eth.Contract(AbiFile.abi, networks[this.networkId]);    
-    //this.Publication = new web3.eth.Contract(AbiFile.abi, "0x657f9AD6ec2D3F147F37d56700a4b5ef3468a08c");    
-    
     this.Publication.setProvider(this.web3Provider);    
   }
 
@@ -125,7 +152,9 @@ export class Dapp {
 
     Leaderboard.processRecord(event.returnValues._sender, score, 
                 event.returnValues._link, event.returnValues._type) 
+
   }
+
 
   async getEvents() {
 
@@ -154,7 +183,6 @@ export class Dapp {
     const now = Date.now() / 1000;
 
     if (!this.topPub) this.topPub = Object.values(pubs).find(elem => elem.lastShownTime === 0);
-  
     
     let timeDiff = 0;
   
@@ -165,8 +193,6 @@ export class Dapp {
       this.minShowTime = Math.max(this.minShowTime, 
         Math.min(...Object.values(pubs).map(pub => pub.time)))
       
-      //  this.minShowTime = this.minShowTime || Math.min(...Object.values(pubs).map(pub => pub.time));
-
       if (keys.length == 1) {
 
           const pub = pubs[keys[0]];
@@ -290,28 +316,19 @@ export class Dapp {
           }
 
           this.topPub = topScorePub;
-
       }
-
-    
     }
 
     currentPub.set(this.topPub);
-
     setTimeout(this.initScores.bind(this), this.minShowTime);
-    
   }
 
   publishNew(link, type, extra, stake) {
-    /* return new Promise((resolve, reject) => {
-      if (2+2 == 3) return reject({ status: "error", reason: "yo mama is too big"})
-      return resolve({ status: "sucess", receiptName: "super receipt" });
-    }) */
 
     return this.Publication.methods.publish(link, type, extra).send( 
       { from: this.account, 
         value:  web3.utils.toWei(stake, "ether"),
-        gas: 3000000
+        gas: 360000
       })
   }
 
@@ -378,3 +395,5 @@ function addToHistory(history, pub, newScore, startTime, length) {
   }
   return history;
 }
+
+// 18:22

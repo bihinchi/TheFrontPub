@@ -1,20 +1,22 @@
 <script>
     import CheckIcon from '../assets/check.svg';
     import ErrorIcon from '../assets/error.svg';
-    export let status;
+    export let status, reason;
 </script>
 
 
 <div class="flex-column">
-    { #if status && status.status == "sucess"}
+    { #if status == "sucess"}
         <span>SUCESS</span>
         <CheckIcon class="icon" fill="green"/>
-    { :else if status && status.status == "error" }
+    { :else if status == "error" }
         <div class="flex-row">
             <span>Error</span>
             <ErrorIcon class="icon" fill="red"/>
         </div>
-        <p>{ status.reason }</p>
+        <p>{ reason || 'Something went wrong'  }</p>
+    { :else }
+        <span>Loading...</span>
     { /if }
 </div>
 

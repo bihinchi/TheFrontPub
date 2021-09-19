@@ -9,10 +9,10 @@
   
   { #if empty }
 
-    <span>No publications ¯\_(ツ)_/¯</span>
+    <span>No new publications ¯\_(ツ)_/¯</span>
 
   { :else if pub.type == "link" }
-    <a id="plainLink" href={pub.link} target="_blank" noopener noreferrer >
+    <a class="plainLink" href={pub.link} target="_blank" rel="noopener noreferrer">
       { #if pub.extra && pub.extra.linkText }
         { pub.extra.linkText }
       { :else }
@@ -23,7 +23,7 @@
   { :else if pub.type == "image"}
 
     { #if pub.extra && pub.extra.imageLink }
-      <a href={pub.extra.imageLink} target="_blank" noopener noreferrer>
+      <a href={pub.extra.imageLink} target="_blank" rel="noopener noreferrer">
         <img src={pub.link} alt="Current publication">
       </a>  
     { :else }
@@ -62,7 +62,7 @@
     flex-grow: 3;
   }
 
-  #plainLink, span {
+  .plainLink, span {
     overflow: auto;
     word-break:break-word;
     font-size: 3.5vw;

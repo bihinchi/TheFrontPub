@@ -9,7 +9,7 @@
   
   export let publish;
 
-  let link, stake, status, type = "link", 
+  let link, stake, reason = "", status = 'loading', type = "link", 
   extra = { linkText : "", imageLink : "" };
 
   $: pub = { link, type, extra }
@@ -24,17 +24,18 @@
   const onPublishClick = () => {
     if (!document.forms[0].reportValidity()) return;
 
+    getModal("status").open(() => status = 'loading');
+
     publish(link, type, JSON.stringify(extra), stake.toString())
     .then(receipt => {
       console.log(receipt);
-      receipt.status = "sucess"
-      status = receipt
+      status = "sucess"
   		getModal("pub").close()
-  		getModal("status").open()
+  		
     })
     .catch(error => {
-      console.log("error", error);
-      status = error
+      status = 'error';
+      reason = error.message
   		getModal("status").open()
     });
 
@@ -104,7 +105,7 @@
 
 
 <Modal id="status">
-  <StatusModalContent {status}/>
+  <StatusModalContent {status} {reason} />
 </Modal>
 
 

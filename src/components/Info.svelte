@@ -27,7 +27,7 @@
 <style>
 
     article {
-        max-width: 90vw;
+        max-width: 80vw;
         max-height: 90vh;
         overflow: auto;
     }
