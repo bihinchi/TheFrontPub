@@ -220,5 +220,36 @@
   }
 
 
+  @media only screen and (max-width: 650px) {
+    
+    ul:first-of-type input {
+      min-width: 50vw;
+    }
+
+    ul:last-of-type input {
+      min-width: 35vw;
+    }
+
+    label {
+      font-size: 2.7vw;
+    }
+
+    select {
+      font-size: 2.5vw;
+    }
+
+    select {
+      font-size: 2.5vw;
+    }
+
+    input {
+      font-size: 3.0vw;
+    }
+
+
+  }
+
+
+
 
 </style>

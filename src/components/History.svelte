@@ -169,14 +169,14 @@
 
 
 { #if records.length > 3}
-<div>
+<nav>
     <span on:click={onStartClick}>Start</span>
     <span>{historytime.toLocaleString()}</span>
     <span on:click={onEndClick}>End</span>
-</div>
+</nav>
 { /if }
 
-<article on:scroll={onScroll} bind:this={scroller}>
+<article class:notempty={records.length>0} on:scroll={onScroll} bind:this={scroller}>
 
     { #if records.length > 0}
         {#each records as record }
@@ -195,7 +195,7 @@
 
 <style>
 
-    div > span {
+    nav > span {
         font-style: italic;
     }
 
@@ -225,7 +225,7 @@
         cursor: pointer;
     }
 
-    div {
+    nav {
         display: flex;
         justify-content: space-between;
         font-size: 1.2vw;
@@ -238,9 +238,12 @@
         white-space: nowrap;
         justify-content: space-between;
         max-width: 91vw;
-        min-height: 60vh;
         min-width: 24vw;
         font-size: 3.0vw;
+    }
+
+    .notempty {
+        min-height: 62vh;
     }
 
     p {

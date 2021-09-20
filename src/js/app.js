@@ -3,10 +3,10 @@ import { currentPub, history } from './stores.js';
 import { Leaderboard } from './leaderboard';
 
 
-import Web3 from "./web3";
+import Web3 from "./web3.min";
+
 
 const MIN5 = 900
-
 const SMALL_DIFF = 0.000001;
 
 
@@ -22,7 +22,7 @@ export class Dapp {
 
   constructor() {
     this.web3Provider = null;
-    this.account = '0x0';
+    this.account = '';
     this.networkId = 1;
     this.reset();
   }
@@ -52,26 +52,27 @@ export class Dapp {
   async initWeb3() {
 
     const updateNetwork = (netId) => {
+
       if (this.networkId !== netId) {
         this.networkId = netId;
         this.reset();
-        this.initPublications();
+        this.initPublications()
+        .catch(e => console.log(e));
       }
     }
 
     if (typeof ethereum !== 'undefined') {
 
-
       this.web3Provider = ethereum;
       web3 = new Web3(this.web3Provider);
       await ethereum.request({ method: 'eth_requestAccounts' })
 
-      ethereum.on('disconnect', e =>this.connected = false );
-      ethereum.on('chainChanged', chainId => updateNetwork(chainId) )
+      ethereum.on('disconnect', e => this.connected = false );
+      ethereum.on('chainChanged', id => updateNetwork(Number(id.substring(2))) )
 
     } else {
 
-      this.web3Provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/402dfb58b389421e9d9ce1f4461ca598');
+      this.web3Provider = new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws/v3/402dfb58b389421e9d9ce1f4461ca598');
       window.web3 = new Web3(this.web3Provider);
 
       if (!(await web3.eth.net.isListening())) {
@@ -97,10 +98,6 @@ export class Dapp {
 
     const accounts = await web3.eth.getAccounts(); 
     this.networkId = await web3.eth.getChainId()
-
-    
-
-    
 
     this.account = accounts[0];
     this.connected = true;

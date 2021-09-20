@@ -49,6 +49,15 @@
         font-weight: bold;
     }
 
+    @media only screen and (max-width: 650px) {
+
+        button {
+            padding: 0.2vh 2.3vw;
+        }
+
+    }
+
+
 
     .glow-on-hover:before {
         content: '';

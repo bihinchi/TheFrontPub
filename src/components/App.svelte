@@ -37,8 +37,10 @@
 		{ #if connected }
 		<Publication pub={$currentPub}/>
 
-		{ #if !error }
+		{ #if !error  }
 			<NewPub publish={dapp.publishNew.bind(dapp)}/>
+		{ :else }
+			<p class="center">Coudldn't find an ethereum wallet. Browsing mode </p>
 		{ /if }
 
 		{ :else }
@@ -49,11 +51,13 @@
 				.then(() => {
 					connected = true;
 					error = false;
+					console.log(dapp.account);
+					
 				})
 				.catch(e => error = e.message)
 			}/>
 	
-			{ #if error } <p class="center">{error}</p> { /if } 
+			{ #if error } <p class="center error">{error}</p> { /if } 
 
 		</div>
 
@@ -134,7 +138,11 @@
 		align-items: center;
 	}
 
-	p {
+	p:not(.error) {
+		flex-grow: 1;
+	}
+
+	.error {
 		color: #a61717;
 	}
 

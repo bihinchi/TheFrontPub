@@ -28,8 +28,9 @@
 
     article {
         max-width: 80vw;
-        max-height: 90vh;
+        max-height: 70vh;
         overflow: auto;
+        padding: 1.2vw;
     }
 
     p {
