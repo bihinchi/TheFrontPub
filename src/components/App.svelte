@@ -14,8 +14,6 @@
 	import Info from "./Info.svelte"
 
 	import ConnectButton from "./ConnectButton.svelte";
-
-	//import { onMount } from "svelte";
 	
 	const calculateWindow = () => {
 		document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`);
@@ -51,8 +49,6 @@
 				.then(() => {
 					connected = true;
 					error = false;
-					console.log(dapp.account);
-					
 				})
 				.catch(e => error = e.message)
 			}/>
