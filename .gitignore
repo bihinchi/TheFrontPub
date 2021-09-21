@@ -1,5 +1,4 @@
 /node_modules/
-/public/build/
 *lock.*
 bp  
 .DS_Store
