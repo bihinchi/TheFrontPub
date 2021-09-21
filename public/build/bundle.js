@@ -6288,7 +6288,7 @@ var app = (function () {
     			create_component(connectbutton.$$.fragment);
     			t = space();
     			if (if_block) if_block.c();
-    			add_location(div, file, 45, 2, 1079);
+    			add_location(div, file, 45, 2, 1094);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -6360,7 +6360,7 @@ var app = (function () {
     	const if_blocks = [];
 
     	function select_block_type_1(ctx, dirty) {
-    		if (!/*error*/ ctx[1]) return 0;
+    		if (!/*error*/ ctx[1] && /*dapp*/ ctx[3].account) return 0;
     		return 1;
     	}
 
@@ -6451,7 +6451,7 @@ var app = (function () {
     			p = element("p");
     			t = text(/*error*/ ctx[1]);
     			attr_dev(p, "class", "center error svelte-4acvwp");
-    			add_location(p, file, 55, 17, 1263);
+    			add_location(p, file, 55, 17, 1278);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -6485,7 +6485,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "Coudldn't find an ethereum wallet. Browsing mode";
     			attr_dev(p, "class", "center svelte-4acvwp");
-    			add_location(p, file, 40, 3, 981);
+    			add_location(p, file, 40, 3, 996);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -6509,7 +6509,7 @@ var app = (function () {
     	return block;
     }
 
-    // (38:2) { #if !error  }
+    // (38:2) { #if !error && dapp.account }
     function create_if_block_1(ctx) {
     	let newpub;
     	let current;
@@ -6548,7 +6548,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(38:2) { #if !error  }",
+    		source: "(38:2) { #if !error && dapp.account }",
     		ctx
     	});
 
@@ -6757,13 +6757,13 @@ var app = (function () {
     			attr_dev(main, "class", "svelte-4acvwp");
     			add_location(main, file, 31, 0, 823);
     			attr_dev(span0, "class", "svelte-4acvwp");
-    			add_location(span0, file, 68, 1, 1361);
+    			add_location(span0, file, 68, 1, 1376);
     			attr_dev(span1, "class", "svelte-4acvwp");
-    			add_location(span1, file, 69, 1, 1425);
+    			add_location(span1, file, 69, 1, 1440);
     			attr_dev(span2, "class", "svelte-4acvwp");
-    			add_location(span2, file, 70, 1, 1497);
+    			add_location(span2, file, 70, 1, 1512);
     			attr_dev(nav, "class", "svelte-4acvwp");
-    			add_location(nav, file, 67, 0, 1354);
+    			add_location(nav, file, 67, 0, 1369);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

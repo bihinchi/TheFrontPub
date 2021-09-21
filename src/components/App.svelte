@@ -35,7 +35,7 @@
 		{ #if connected }
 		<Publication pub={$currentPub}/>
 
-		{ #if !error  }
+		{ #if !error && dapp.account }
 			<NewPub publish={dapp.publishNew.bind(dapp)}/>
 		{ :else }
 			<p class="center">Coudldn't find an ethereum wallet. Browsing mode </p>
