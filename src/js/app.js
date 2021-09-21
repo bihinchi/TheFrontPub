@@ -127,7 +127,7 @@ export class Dapp {
       throw new Error(text);
     }
 
-    this.Publication = new web3.eth.Contract(AbiFile.abi, networks[this.networkId]);    
+    this.Publication = new web3.eth.Contract(AbiFile.default, networks[this.networkId]);    
     this.Publication.setProvider(this.web3Provider);    
   }
 

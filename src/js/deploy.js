@@ -29,7 +29,7 @@ const contract = compileCode.contracts.contract.Publication
 const abi = contract.abi;
 const byteCode = contract.evm.bytecode.object;
 
-fs.writeFileSync("src/contracts/build/Publication.json", JSON.stringify(contract));
+fs.writeFileSync("src/contracts/build/Publication.json", JSON.stringify(abi));
 
 
 
