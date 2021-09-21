@@ -24,7 +24,10 @@
   const onPublishClick = () => {
     if (!document.forms[0].reportValidity()) return;
 
-    getModal("status").open(() => status = 'loading');
+    getModal("status").open(() => {
+      status = 'loading';
+      reason = '';
+    });
 
     publish(link, type, JSON.stringify(extra), stake.toString())
     .then(receipt => {
@@ -158,8 +161,6 @@
 
 
   select {
-    /* margin-left: 2vw;
-    margin-bottom: 2vh; */
     padding: 0.7vh 1.8vw;
     border-radius: 4vw;
     border: 0.2vw solid #0a131b;

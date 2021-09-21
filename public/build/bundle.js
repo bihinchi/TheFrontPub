@@ -2213,7 +2213,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (63:8) {#each publicationTypes as pubType}
+    // (66:8) {#each publicationTypes as pubType}
     function create_each_block$2(ctx) {
     	let option;
     	let t0_value = /*pubType*/ ctx[17].text + "";
@@ -2227,7 +2227,7 @@ var app = (function () {
     			t1 = space();
     			option.__value = /*pubType*/ ctx[17].type;
     			option.value = option.__value;
-    			add_location(option, file$8, 63, 8, 1470);
+    			add_location(option, file$8, 66, 8, 1504);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -2244,14 +2244,14 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(63:8) {#each publicationTypes as pubType}",
+    		source: "(66:8) {#each publicationTypes as pubType}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (82:31) 
+    // (85:31) 
     function create_if_block_2$3(ctx) {
     	let li;
     	let input;
@@ -2264,9 +2264,9 @@ var app = (function () {
     			input = element("input");
     			attr_dev(input, "placeholder", "Image link (Optional)");
     			attr_dev(input, "type", "url");
-    			attr_dev(input, "class", "svelte-hytle7");
-    			add_location(input, file$8, 84, 10, 1917);
-    			add_location(li, file$8, 83, 6, 1902);
+    			attr_dev(input, "class", "svelte-11h9qn4");
+    			add_location(input, file$8, 87, 10, 1951);
+    			add_location(li, file$8, 86, 6, 1936);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -2294,14 +2294,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$3.name,
     		type: "if",
-    		source: "(82:31) ",
+    		source: "(85:31) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (76:4) { #if type == "link" }
+    // (79:4) { #if type == "link" }
     function create_if_block_1$3(ctx) {
     	let li;
     	let input;
@@ -2314,9 +2314,9 @@ var app = (function () {
     			input = element("input");
     			attr_dev(input, "placeholder", "Text for the link (optional)");
     			attr_dev(input, "type", "text");
-    			attr_dev(input, "class", "svelte-hytle7");
-    			add_location(input, file$8, 78, 8, 1752);
-    			add_location(li, file$8, 77, 6, 1739);
+    			attr_dev(input, "class", "svelte-11h9qn4");
+    			add_location(input, file$8, 81, 8, 1786);
+    			add_location(li, file$8, 80, 6, 1773);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -2344,14 +2344,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$3.name,
     		type: "if",
-    		source: "(76:4) { #if type == \\\"link\\\" }",
+    		source: "(79:4) { #if type == \\\"link\\\" }",
     		ctx
     	});
 
     	return block;
     }
 
-    // (107:0) <Modal id="status">
+    // (110:0) <Modal id="status">
     function create_default_slot_1$1(ctx) {
     	let statusmodalcontent;
     	let current;
@@ -2396,14 +2396,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1$1.name,
     		type: "slot",
-    		source: "(107:0) <Modal id=\\\"status\\\">",
+    		source: "(110:0) <Modal id=\\\"status\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (112:0) { #if pub && pub.link}
+    // (115:0) { #if pub && pub.link}
     function create_if_block$3(ctx) {
     	let modal;
     	let current;
@@ -2452,14 +2452,14 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(112:0) { #if pub && pub.link}",
+    		source: "(115:0) { #if pub && pub.link}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (113:0) <Modal id="preview">
+    // (116:0) <Modal id="preview">
     function create_default_slot$2(ctx) {
     	let div;
     	let publication;
@@ -2475,8 +2475,8 @@ var app = (function () {
     			div = element("div");
     			create_component(publication.$$.fragment);
     			attr_dev(div, "id", "preview-content");
-    			attr_dev(div, "class", "center svelte-hytle7");
-    			add_location(div, file$8, 113, 2, 2540);
+    			attr_dev(div, "class", "center svelte-11h9qn4");
+    			add_location(div, file$8, 116, 2, 2574);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2507,7 +2507,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$2.name,
     		type: "slot",
-    		source: "(113:0) <Modal id=\\\"preview\\\">",
+    		source: "(116:0) <Modal id=\\\"preview\\\">",
     		ctx
     	});
 
@@ -2620,41 +2620,41 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
     			attr_dev(label, "for", "pubType");
-    			attr_dev(label, "class", "svelte-hytle7");
-    			add_location(label, file$8, 60, 6, 1337);
+    			attr_dev(label, "class", "svelte-11h9qn4");
+    			add_location(label, file$8, 63, 6, 1371);
     			attr_dev(select, "id", "pubType");
-    			attr_dev(select, "class", "svelte-hytle7");
+    			attr_dev(select, "class", "svelte-11h9qn4");
     			if (/*type*/ ctx[1] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[12].call(select));
-    			add_location(select, file$8, 61, 6, 1378);
+    			add_location(select, file$8, 64, 6, 1412);
     			attr_dev(li0, "id", "typeLi");
-    			attr_dev(li0, "class", "svelte-hytle7");
-    			add_location(li0, file$8, 59, 4, 1314);
+    			attr_dev(li0, "class", "svelte-11h9qn4");
+    			add_location(li0, file$8, 62, 4, 1348);
     			attr_dev(input0, "placeholder", "URL of the publication");
     			attr_dev(input0, "type", "url");
     			input0.required = true;
-    			attr_dev(input0, "class", "svelte-hytle7");
-    			add_location(input0, file$8, 71, 6, 1605);
-    			add_location(li1, file$8, 70, 4, 1594);
-    			attr_dev(ul0, "class", "center svelte-hytle7");
-    			add_location(ul0, file$8, 57, 2, 1289);
+    			attr_dev(input0, "class", "svelte-11h9qn4");
+    			add_location(input0, file$8, 74, 6, 1639);
+    			add_location(li1, file$8, 73, 4, 1628);
+    			attr_dev(ul0, "class", "center svelte-11h9qn4");
+    			add_location(ul0, file$8, 60, 2, 1323);
     			attr_dev(input1, "type", "number");
     			attr_dev(input1, "placeholder", "Bet value (ETH)");
     			attr_dev(input1, "min", "0.001");
     			attr_dev(input1, "max", "1000");
     			attr_dev(input1, "step", "0.0001");
     			input1.required = true;
-    			attr_dev(input1, "class", "svelte-hytle7");
-    			add_location(input1, file$8, 94, 6, 2069);
-    			add_location(li2, file$8, 93, 4, 2058);
-    			attr_dev(ul1, "class", "svelte-hytle7");
-    			add_location(ul1, file$8, 92, 2, 2049);
+    			attr_dev(input1, "class", "svelte-11h9qn4");
+    			add_location(input1, file$8, 97, 6, 2103);
+    			add_location(li2, file$8, 96, 4, 2092);
+    			attr_dev(ul1, "class", "svelte-11h9qn4");
+    			add_location(ul1, file$8, 95, 2, 2083);
     			attr_dev(div, "id", "button-group");
-    			attr_dev(div, "class", "svelte-hytle7");
-    			add_location(div, file$8, 98, 2, 2208);
+    			attr_dev(div, "class", "svelte-11h9qn4");
+    			add_location(div, file$8, 101, 2, 2242);
     			attr_dev(form, "id", "form");
     			attr_dev(form, "action", "#");
-    			attr_dev(form, "class", "center svelte-hytle7");
-    			add_location(form, file$8, 56, 0, 1219);
+    			attr_dev(form, "class", "center svelte-11h9qn4");
+    			add_location(form, file$8, 59, 0, 1253);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2851,7 +2851,11 @@ var app = (function () {
 
     	const onPublishClick = () => {
     		if (!document.forms[0].reportValidity()) return;
-    		getModal("status").open(() => $$invalidate(5, status = 'loading'));
+
+    		getModal("status").open(() => {
+    			$$invalidate(5, status = 'loading');
+    			$$invalidate(4, reason = '');
+    		});
 
     		publish(link, type, JSON.stringify(extra), stake.toString()).then(receipt => {
     			console.log(receipt);
@@ -6555,7 +6559,7 @@ var app = (function () {
     	return block;
     }
 
-    // (75:0) <Modal id="history">
+    // (74:0) <Modal id="history">
     function create_default_slot_2(ctx) {
     	let history;
     	let current;
@@ -6587,14 +6591,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_2.name,
     		type: "slot",
-    		source: "(75:0) <Modal id=\\\"history\\\">",
+    		source: "(74:0) <Modal id=\\\"history\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (79:0) <Modal id="leaderboard">
+    // (78:0) <Modal id="leaderboard">
     function create_default_slot_1(ctx) {
     	let leaderboard;
     	let current;
@@ -6626,14 +6630,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(79:0) <Modal id=\\\"leaderboard\\\">",
+    		source: "(78:0) <Modal id=\\\"leaderboard\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (83:0) <Modal id="info">
+    // (82:0) <Modal id="info">
     function create_default_slot(ctx) {
     	let info;
     	let current;
@@ -6665,7 +6669,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(83:0) <Modal id=\\\"info\\\">",
+    		source: "(82:0) <Modal id=\\\"info\\\">",
     		ctx
     	});
 
@@ -6757,13 +6761,13 @@ var app = (function () {
     			attr_dev(main, "class", "svelte-4acvwp");
     			add_location(main, file, 31, 0, 823);
     			attr_dev(span0, "class", "svelte-4acvwp");
-    			add_location(span0, file, 68, 1, 1376);
+    			add_location(span0, file, 67, 1, 1375);
     			attr_dev(span1, "class", "svelte-4acvwp");
-    			add_location(span1, file, 69, 1, 1440);
+    			add_location(span1, file, 68, 1, 1439);
     			attr_dev(span2, "class", "svelte-4acvwp");
-    			add_location(span2, file, 70, 1, 1512);
+    			add_location(span2, file, 69, 1, 1511);
     			attr_dev(nav, "class", "svelte-4acvwp");
-    			add_location(nav, file, 67, 0, 1369);
+    			add_location(nav, file, 66, 0, 1368);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
