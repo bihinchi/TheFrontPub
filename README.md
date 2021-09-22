@@ -1,6 +1,6 @@
 
 
-# svelte app
+# TheFrontPub
 
 An app for decentralized publications that uses [Ethereum](https://ethereum.org/en/what-is-ethereum/) as a backend.
 Supported types of publications are a simple link, an image, a video or an iframe to another site. 
