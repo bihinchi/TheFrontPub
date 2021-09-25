@@ -129,17 +129,8 @@ export class Dapp {
       throw new Error(text);
     }
 
-    alert('contract before')
-
     this.Publication = new web3.eth.Contract(AbiFile.default, networks[this.networkId]);    
-    
-    alert('contract after, setProv before')
-    
     this.Publication.setProvider(this.web3Provider); 
-    
-    alert('setProv after')
-
-    
   }
 
   processEvent(event) {
