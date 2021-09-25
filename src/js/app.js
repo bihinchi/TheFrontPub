@@ -64,15 +64,18 @@ export class Dapp {
     if (typeof ethereum !== 'undefined') {
 
       this.web3Provider = ethereum;
-      web3 = new Web3(this.web3Provider);
-      await ethereum.request({ method: 'eth_requestAccounts' })
+
+      window.web3 = new Web3(this.web3Provider);
+
+      if (ethereum.isMetaMask) await ethereum.request({ method: 'eth_requestAccounts' });
+      else await ethereum.enable();
 
       ethereum.on('disconnect', e => this.connected = false );
       ethereum.on('chainChanged', id => updateNetwork(Number(id.substring(2))) )
 
     } else {
 
-      this.web3Provider = new Web3.providers.WebsocketProvider('wss://ropsten.infura.io/ws/v3/402dfb58b389421e9d9ce1f4461ca598');
+      this.web3Provider = new Web3.providers.WebsocketProvider('wss://mainnet.infura.io/ws/v3/402dfb58b389421e9d9ce1f4461ca598');
       window.web3 = new Web3(this.web3Provider);
 
       if (!(await web3.eth.net.isListening())) {
@@ -97,11 +100,10 @@ export class Dapp {
     }
 
     const accounts = await web3.eth.getAccounts(); 
-    this.networkId = await web3.eth.getChainId()
+    this.networkId = this.web3Provider.isMetaMask ? await web3.eth.getChainId() : 1;
 
     this.account = accounts[0];
     this.connected = true;
-  
   };
 
 
@@ -127,8 +129,17 @@ export class Dapp {
       throw new Error(text);
     }
 
+    alert('contract before')
+
     this.Publication = new web3.eth.Contract(AbiFile.default, networks[this.networkId]);    
-    this.Publication.setProvider(this.web3Provider);    
+    
+    alert('contract after, setProv before')
+    
+    this.Publication.setProvider(this.web3Provider); 
+    
+    alert('setProv after')
+
+    
   }
 
   processEvent(event) {
